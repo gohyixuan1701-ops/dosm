@@ -1,0 +1,61 @@
+from flask import Flask, render_template, abort
+from pathlib import Path
+import html
+
+app = Flask(__name__)
+
+STATE_DATA = {
+    'Johor': {'code':'MY01','colour':'#F59E0B','visitors':'4.82M','growth':'+8.4%','highlights':['Desaru Coast','Johor Bahru','Mersing'], 'slug':'johor'},
+    'Kedah': {'code':'MY02','colour':'#10B981','visitors':'3.15M','growth':'+5.7%','highlights':['Langkawi','Alor Setar','Kilim Geoforest Park'], 'slug':'kedah'},
+    'Kelantan': {'code':'MY03','colour':'#8B5CF6','visitors':'1.94M','growth':'+3.2%','highlights':['Kota Bharu','Siti Khadijah Market','Pantai Cahaya Bulan'], 'slug':'kelantan'},
+    'Malacca': {'code':'MY04','colour':'#EF4444','visitors':'2.76M','growth':'+6.1%','highlights':['Jonker Street','A Famosa','Melaka River'], 'slug':'malacca'},
+    'Negeri Sembilan': {'code':'MY05','colour':'#06B6D4','visitors':'1.83M','growth':'+4.9%','highlights':['Port Dickson','Seremban','Kuala Pilah'], 'slug':'negeri-sembilan'},
+    'Pahang': {'code':'MY06','colour':'#F97316','visitors':'3.68M','growth':'+7.3%','highlights':['Cameron Highlands','Taman Negara','Kuantan'], 'slug':'pahang'},
+    'Penang': {'code':'MY07','colour':'#EC4899','visitors':'5.46M','growth':'+9.8%','highlights':['George Town','Batu Ferringhi','Balik Pulau'], 'slug':'penang'},
+    'Perak': {'code':'MY08','colour':'#84CC16','visitors':'4.01M','growth':'+6.5%','highlights':['Ipoh','Pangkor Island','Royal Belum'], 'slug':'perak'},
+    'Perlis': {'code':'MY09','colour':'#14B8A6','visitors':'0.72M','growth':'+2.8%','highlights':['Kuala Perlis','Wang Kelian','Gua Kelam'], 'slug':'perlis'},
+    'Selangor': {'code':'MY10','colour':'#6366F1','visitors':'7.12M','growth':'+10.4%','highlights':['Petaling Jaya','Shah Alam','Sepang'], 'slug':'selangor'},
+    'Terengganu': {'code':'MY11','colour':'#0EA5E9','visitors':'2.87M','growth':'+5.2%','highlights':['Perhentian Islands','Redang Island','Kuala Terengganu'], 'slug':'terengganu'},
+    'Sabah': {'code':'MY12','colour':'#22C55E','visitors':'3.92M','growth':'+11.2%','highlights':['Kota Kinabalu','Mount Kinabalu','Semporna'], 'slug':'sabah'},
+    'Sarawak': {'code':'MY13','colour':'#EAB308','visitors':'3.51M','growth':'+7.9%','highlights':['Kuching','Mulu','Bako National Park'], 'slug':'sarawak'},
+    'Kuala Lumpur': {'code':'MY14','colour':'#7C3AED','visitors':'6.83M','growth':'+12.6%','highlights':['KLCC','Bukit Bintang','Batu Caves'], 'slug':'kuala-lumpur'},
+    'Labuan': {'code':'MY15','colour':'#FB7185','visitors':'0.34M','growth':'+1.9%','highlights':['Patau-Patau','Labuan Marine Museum','Financial Park'], 'slug':'labuan'},
+    'Putrajaya': {'code':'MY16','colour':'#475569','visitors':'1.18M','growth':'+6.8%','highlights':['Putra Mosque','Persiaran Perdana','Taman Botani'], 'slug':'putrajaya'},
+}
+
+SVG_PATH = Path(app.root_path, 'static', 'malaysia.svg').read_text(encoding='utf-8')
+
+# Turn the uploaded SVG into an inline, dashboard-friendly map.
+# The original file's state paths already carry a `name` attribute.
+SVG_PATH = SVG_PATH.replace('<svg ', '<svg class="malaysia-map" preserveAspectRatio="xMidYMid meet" ')
+for state, data in STATE_DATA.items():
+    if f'name="{state}"' in SVG_PATH:
+        SVG_PATH = SVG_PATH.replace(
+            f'name="{state}"',
+            f'name="{state}" data-state="{data["slug"]}"'
+        )
+
+# Start with a neutral fill; CSS assigns the per-state palette via data-state.
+SVG_PATH = SVG_PATH.replace('fill="#6f9c76"', 'fill="currentColor"')
+
+@app.context_processor
+def inject_globals():
+    return {'states': STATE_DATA, 'malaysia_svg': SVG_PATH}
+
+@app.get('/')
+def index():
+    return render_template('index.html', page='dashboard')
+
+@app.get('/states/<slug>')
+def state_detail(slug):
+    state = next((name for name, d in STATE_DATA.items() if d['slug'] == slug), None)
+    if not state:
+        abort(404)
+    return render_template('_state_detail.html', state_name=state, state=STATE_DATA[state])
+
+@app.get('/insights')
+def insights():
+    return render_template('_insights.html')
+
+if __name__ == '__main__':
+    app.run(debug=True, host='0.0.0.0')
