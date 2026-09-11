@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MyTourism Analytics — DOSM Competition Prototype</title>
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">MY</div>
+        <div><strong>MyTourism</strong><span>Malaysia Tourism Intelligence</span></div>
+      </div>
+      <nav>
+        <a class="nav-item active" href="#dashboard"><span>◈</span> Overview</a>
+        <a class="nav-item" href="#states"><span>◫</span> State Explorer</a>
+        <a class="nav-item" href="#trends"><span>◒</span> Trends</a>
+        <a class="nav-item" href="#currency"><span>RM</span> Currency</a>
+        <a class="nav-item" href="#chatbox"><span>◔</span> AI Chatbox</a>
+        <a class="nav-item" href="#insights"><span>✦</span> AI Insights</a>
+      </nav>
+      <div class="sidebar-card">
+        <div class="tiny-label">DATA STATUS</div>
+        <div class="status-row"><span class="status-dot"></span> Dashboard prototype</div>
+        <p>Replace the mock tourism metrics with DOSM datasets after the UI is approved.</p>
+      </div>
+      <div class="sidebar-foot">DOSM AI Tourism Challenge<br><span>Prototype v0.1</span></div>
+    </aside>
+
+    <main class="main" id="dashboard">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">MALAYSIA • TOURISM ANALYTICS</div>
+          <h1>When and where should you go?</h1>
+          <p>Pick a destination and a date — get a rating built from seasonal risk and tourism demand trends.</p>
+        </div>
+        <div class="header-actions">
+          <button class="profile-btn">DOSM</button>
+        </div>
+      </header>
+
+      <section class="hero-grid">
+        <div class="hero-copy">
+          <div class="pill">● TRIP RATING GENERATOR</div>
+          <h2>Get a <span>trip rating</span><br>for any state, any date</h2>
+          <form class="rating-form" hx-post="{{ url_for('rate') }}" hx-target="#rating-output" hx-swap="innerHTML">
+            <label>
+              <span>Destination</span>
+              <select name="destination" id="destination-select" required>
+                <option value="" disabled selected>Choose a state…</option>
+                {% for name, data in states.items() %}
+                <option value="{{ data.slug }}">{{ name }}</option>
+                {% endfor %}
+              </select>
+            </label>
+            <label>
+              <span>Visit date</span>
+              <input type="date" name="visit_date" required>
+            </label>
+            <button class="primary-btn wide" type="submit">Generate rating →</button>
+          </form>
+          <small>Click a state on the map to fill it in automatically.</small>
+        </div>
+
+        <div class="map-card">
+          <div class="map-card-head">
+            <div><strong>Pick a destination</strong><span>Click a state to select it</span></div>
+            <div class="legend"><i></i> Growth intensity</div>
+          </div>
+          <div class="map-wrap" id="map-wrap">
+            {{ malaysia_svg|safe }}
+          </div>
+          <div class="map-bottom">
+            <div class="scale"><span>Lower</span><div><i></i><i></i><i></i><i></i><i></i></div><span>Higher</span></div>
+            <span class="map-note">State boundaries from uploaded SVG</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="rating-output-section">
+        <div class="panel rating-panel" id="rating-output">
+          <div class="rating-empty">
+            <div class="detail-orb">◉</div>
+            <div class="section-kicker">TRIP RATING</div>
+            <h3>Choose a destination and date above</h3>
+            <p>The rating will appear here once generated.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-grid" id="trends">
+        <article class="kpi-card"><div class="kpi-icon">↗</div><span>International arrivals</span><strong>26.7M</strong><em>+7.8% vs prior year</em></article>
+        <article class="kpi-card"><div class="kpi-icon">◌</div><span>Domestic trips</span><strong>126.4M</strong><em>+5.2% vs prior year</em></article>
+        <article class="kpi-card"><div class="kpi-icon">RM</div><span>Tourism receipts</span><strong>RM 102.9B</strong><em>+9.1% vs prior year</em></article>
+        <article class="kpi-card accent"><div class="kpi-icon">✦</div><span>AI opportunity score</span><strong>82 / 100</strong><em>High potential for prediction</em></article>
+      </section>
+
+      <section class="content-grid" id="states">
+        <div class="panel state-panel">
+          <div class="panel-head"><div><div class="section-kicker">EXPLORE</div><h3>State highlights</h3></div><button class="ghost-btn small">View all</button></div>
+          <div class="state-grid">
+            {% for name, data in states.items() %}
+            <button class="state-card" hx-get="{{ url_for('state_detail', slug=data.slug) }}" hx-target="#state-detail" hx-swap="innerHTML">
+              <span class="state-swatch" style="--swatch: {{ data.colour }}"></span>
+              <span class="state-copy"><strong>{{ name }}</strong><small>{{ data.visitors }} visitors</small></span>
+              <span class="state-growth">{{ data.growth }}</span>
+            </button>
+            {% endfor %}
+          </div>
+        </div>
+        <aside class="panel detail-panel" id="state-detail">
+          <div class="empty-detail">
+            <div class="detail-orb">◉</div>
+            <div class="section-kicker">STATE DETAIL</div>
+            <h3>Select a state</h3>
+            <p>HTMX will fetch a focused state summary here without reloading the page.</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="content-grid" id="currency-chatbox">
+        <div class="panel currency-panel" id="currency">
+          <div class="panel-head"><div><div class="section-kicker">CURRENCY</div><h3>Exchange rate converter</h3></div></div>
+          <form class="convert-form" hx-post="{{ url_for('convert') }}" hx-target="#convert-output" hx-swap="innerHTML">
+            <div class="convert-row">
+              <label class="convert-amount">
+                <span>Amount</span>
+                <input type="number" name="amount" step="0.01" min="0" value="100" required>
+              </label>
+              <label>
+                <span>Currency</span>
+                <select name="from_currency">
+                  {% for c in currencies %}
+                  <option value="{{ c.code }}" {% if c.code == 'USD' %}selected{% endif %}>{{ c.code }} — {{ c.label }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+            </div>
+            <input type="hidden" name="to_currency" value="MYR">
+            <button class="primary-btn wide dark" type="submit">Convert to RM →</button>
+          </form>
+            <button class="primary-btn wide dark" type="submit">Convert →</button>
+          </form>
+          <div id="convert-output" class="convert-output"></div>
+          <small class="map-note">Source: Bank Negara Malaysia mid rates (daily){% if rates_date %}, latest: {{ rates_date }}{% endif %}</small>
+        </div>
+
+        <div class="panel reserved-panel" id="chatbox">
+          <div class="reserved-head">
+            <div><div class="section-kicker">AI CHATBOX</div><h3>Ask about your trip</h3></div>
+            <span class="soon-pill">COMING SOON</span>
+          </div>
+          <div class="reserved-preview">
+            <div class="chat-bubble chat-bot reserved-fill">Hi! Ask me about monsoon season, currency, or the best time to visit a state.</div>
+          </div>
+          <p class="reserved-note">Deferred until the ML/statistics work is done — may end up as a rule-based assistant or linked out to an AI agent instead. Space is reserved here either way.</p>
+        </div>
+      </section>
+
+      <section class="panel insight-panel" id="insights">
+        <div class="insight-copy">
+          <div class="section-kicker">AI / MACHINE LEARNING</div>
+          <h3>Design the dashboard now; plug in intelligence later.</h3>
+          <p>This section is intentionally UI-first. Your future model can predict visitor volume, recommend destinations, classify tourist segments, or flag unusual changes in tourism activity.</p>
+          <button class="primary-btn" hx-get="{{ url_for('insights') }}" hx-target="#insight-output" hx-swap="innerHTML">Generate prototype insight →</button>
+        </div>
+        <div class="insight-output" id="insight-output">
+          <div class="output-placeholder"><span>✦</span><div><strong>AI insight output</strong><p>Waiting for model connection...</p></div></div>
+        </div>
+      </section>
+
+      <footer>Designed as an AI-assisted tourism dashboard concept for a DOSM competition. Data shown in this prototype is illustrative until linked to approved sources.</footer>
+    </main>
+  </div>
+
+  <script>
+    // Clicking a state on the map selects it in the rating form.
+    document.querySelectorAll('.malaysia-map path[data-state]').forEach(function (path) {
+      path.addEventListener('click', function () {
+        var select = document.getElementById('destination-select');
+        if (!select) return;
+        select.value = path.getAttribute('data-state');
+        document.querySelectorAll('.malaysia-map path[data-state]').forEach(function (p) {
+          p.classList.remove('is-selected');
+        });
+        path.classList.add('is-selected');
+      });
+    });
+  </script>
+</body>
+</html>

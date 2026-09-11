@@ -1,0 +1,36 @@
+{% if error %}
+<div class="rating-empty">
+  <div class="detail-orb">◉</div>
+  <h3>Pick a destination and date</h3>
+  <p>Choose a state and a visit date above, then generate the rating.</p>
+</div>
+{% else %}
+<div class="rating-result" style="--verdict-colour: {{ r.verdict_colour }}">
+  <div class="rating-score-ring">
+    <strong>{{ r.overall }}</strong>
+    <span>/ 100</span>
+  </div>
+  <div class="rating-headline">
+    <div class="section-kicker">{{ r.state_name.upper() }} • {{ r.date_display }}</div>
+    <h3>{{ r.verdict }}</h3>
+  </div>
+  <div class="rating-breakdown">
+    <div class="rating-row">
+      <span>Seasonal / weather risk</span>
+      <div class="rating-bar"><i style="width:{{ r.seasonal_score }}%"></i></div>
+      <strong>{{ r.seasonal_score }}</strong>
+    </div>
+    <p class="rating-note">{{ r.seasonal_reason }}</p>
+    <div class="rating-row">
+      <span>Tourism demand trend</span>
+      <div class="rating-bar"><i style="width:{{ r.demand_score }}%"></i></div>
+      <strong>{{ r.demand_score }}</strong>
+    </div>
+    <p class="rating-note">Based on {{ r.state_name }}'s illustrative visitor growth trend.</p>
+  </div>
+  <div class="future-card">
+    <span>✦</span>
+    <div><strong>Placeholder logic</strong><small>This score is a rule-based stand-in (seasonal + demand). Swap in the trained model's output once ready — this card won't need to change.</small></div>
+  </div>
+</div>
+{% endif %}
