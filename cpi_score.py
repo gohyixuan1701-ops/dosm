@@ -1,0 +1,131 @@
+
+from pathlib import Path
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+from gdp_forecast import NAME_ALIASES  # already extended with Labuan/Putrajaya
+
+DATA_DIR = Path(__file__).parent
+SOURCE_CSV = DATA_DIR / 'cpi_2d_state.csv'
+FORECAST_CSV = DATA_DIR / 'cpi_forecast.csv'
+
+LAST_REAL_YEAR = 2025  # last COMPLETE year (2026 only has 7 months so far)
+FORECAST_YEARS = [2026, 2027, 2028]
+
+
+def _load_annual_cpi():
+    """Annual mean CPI ('overall' division) per state, complete years only."""
+    df = pd.read_csv(SOURCE_CSV)
+    df = df[df['division'] == 'overall'].copy()
+    df['year'] = pd.to_datetime(df['date']).dt.year
+
+    counts = df.groupby(['state', 'year']).size().reset_index(name='n_months')
+    complete = counts[counts['n_months'] == 12][['state', 'year']]
+
+    annual = df.groupby(['state', 'year'])['index'].mean().reset_index()
+    annual = annual.merge(complete, on=['state', 'year'])  # drop incomplete years
+    return annual
+
+
+_annual_cache = None
+
+
+def predict_state_cpi(state_name, year):
+    """Return predicted annual-average CPI index for a state + year, or
+    None if the state isn't found. Uses the full available history
+    (see METHODOLOGY NOTE -- no rebasing break to work around here)."""
+    global _annual_cache
+    if _annual_cache is None:
+        _annual_cache = _load_annual_cpi()
+
+    crime_name = NAME_ALIASES.get(state_name, state_name)
+    rows = _annual_cache[_annual_cache['state'] == crime_name]
+    if rows.empty:
+        return None
+
+    model = LinearRegression().fit(rows[['year']], rows['index'])
+    return float(model.predict(pd.DataFrame({'year': [year]}))[0])
+
+
+def get_state_cpi(state_name, year):
+    """Blended lookup: real annual average for year <= 2025, linear
+    trend forecast for 2026-2028 (clamped beyond that)."""
+    global _annual_cache
+    if _annual_cache is None:
+        _annual_cache = _load_annual_cpi()
+
+    crime_name = NAME_ALIASES.get(state_name, state_name)
+
+    if year <= LAST_REAL_YEAR:
+        row = _annual_cache[(_annual_cache['state'] == crime_name) & (_annual_cache['year'] == year)]
+        return float(row['index'].iloc[0]) if len(row) else None
+
+    clamped_year = min(FORECAST_YEARS[-1], year)
+    return predict_state_cpi(state_name, clamped_year)
+
+
+def forecast_all_states():
+    """Predict every state's CPI for every FORECAST_YEARS year. Returns
+    a long-format DataFrame: state, year, predicted_cpi."""
+    global _annual_cache
+    if _annual_cache is None:
+        _annual_cache = _load_annual_cpi()
+    states = sorted(_annual_cache['state'].unique())
+
+    rows = []
+    for state in states:
+        for year in FORECAST_YEARS:
+            rows.append({
+                'state': state,
+                'year': year,
+                'predicted_cpi': predict_state_cpi(state, year),
+            })
+    return pd.DataFrame(rows)
+
+
+def load_forecast_table():
+    if not FORECAST_CSV.exists():
+        return None
+    return pd.read_csv(FORECAST_CSV)
+
+
+ALL_STATES = ['Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang',
+              'Perak', 'Perlis', 'Pulau Pinang', 'Sabah', 'Sarawak', 'Selangor',
+              'Terengganu', 'W.P. Kuala Lumpur', 'W.P. Labuan', 'W.P. Putrajaya']
+
+
+def affordability_score(state_name, year):
+    """Return (score 0-100, reason). Relative ranking by CPI across
+    all states for the given year -- INVERTED direction from every
+    other relative-ranking score in this project: a LOWER cost-of-
+    living index means MORE affordable, so it gets the HIGHER score.
+    (Flagged loudly here because copying the "higher raw value = higher
+    score" pattern from population_score()/gdp_score() unchanged would
+    be a real bug, not just a different judgment call.)"""
+    values = {}
+    for s in ALL_STATES:
+        v = get_state_cpi(s, year)
+        if v is not None:
+            values[s] = v
+
+    crime_name = NAME_ALIASES.get(state_name, state_name)
+    if crime_name not in values or len(values) < 2:
+        return 75, 'No CPI data available for this state/year; a neutral score is used.'
+
+    series = pd.Series(values)
+    lo, hi = series.min(), series.max()
+    this_value = series[crime_name]
+    # NOTE: (hi - this_value), not (this_value - lo) -- lower CPI wins.
+    score = 100 if hi == lo else round(100 * (hi - this_value) / (hi - lo))
+    reason = f'Cost-of-living index ~{this_value:.1f} in {year}, relative to other states (lower = more affordable = higher score).'
+    return score, reason
+
+
+if __name__ == '__main__':
+
+    print("\nForecasting all states...")
+    forecast = forecast_all_states()
+    forecast['predicted_cpi'] = forecast['predicted_cpi'].round(2)
+    forecast.to_csv(FORECAST_CSV, index=False)
+    print(f"Saved {len(forecast)} rows to {FORECAST_CSV}")
+
