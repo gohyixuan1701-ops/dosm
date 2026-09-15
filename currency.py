@@ -20,7 +20,7 @@ from pathlib import Path
 import csv
 from datetime import datetime
 
-DATA_PATH = Path(__file__).parent / 'data' / 'exchange-rates.csv'
+DATA_PATH = Path(__file__).parent 'exchange-rates.csv'
 
 CURRENCY_LABELS = {
     'USD': 'US Dollar', 'GBP': 'British Pound', 'EUR': 'Euro',
