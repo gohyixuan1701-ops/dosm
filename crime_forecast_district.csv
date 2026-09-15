@@ -1,0 +1,766 @@
+state,district,year,predicted_crimes
+Johor,Batu Pahat,2024,428.83936
+Johor,Iskandar Puteri,2024,532.9266
+Johor,Johor Bahru Selatan,2024,1522.6403
+Johor,Johor Bahru Utara,2024,856.5406
+Johor,Kluang,2024,399.78055
+Johor,Kota Tinggi,2024,310.283
+Johor,Kulaijaya,2024,403.31857
+Johor,Ledang,2024,141.19739
+Johor,Mersing,2024,94.58899
+Johor,Muar,2024,276.90277
+Johor,Nusajaya,2024,58.27275
+Johor,Pontian,2024,211.32379
+Johor,Segamat,2024,215.97232
+Johor,Seri Alam,2024,973.9469
+Kedah,Baling,2024,270.64438
+Kedah,Kota Setar,2024,1146.7794
+Kedah,Kuala Muda,2024,1364.5411
+Kedah,Kubang Pasu,2024,436.2663
+Kedah,Kulim,2024,639.1728
+Kedah,Langkawi,2024,268.99725
+Kedah,Padang Terap,2024,100.184616
+Kedah,Pendang,2024,185.3597
+Kedah,Sik,2024,53.40589
+Kedah,Yan,2024,98.51972
+Kelantan,Bachok,2024,185.6984
+Kelantan,Gua Musang,2024,123.16458
+Kelantan,Jeli,2024,39.69564
+Kelantan,Kota Bharu,2024,1014.6081
+Kelantan,Kuala Krai,2024,103.55339
+Kelantan,Machang,2024,142.37274
+Kelantan,Pasir Mas,2024,224.23706
+Kelantan,Pasir Puteh,2024,224.45802
+Kelantan,Tanah Merah,2024,180.81691
+Kelantan,Tumpat,2024,212.39511
+Melaka,Alor Gajah,2024,275.37994
+Melaka,Jasin,2024,181.671
+Melaka,Melaka Tengah,2024,1312.968
+Negeri Sembilan,Jelebu,2024,56.823803
+Negeri Sembilan,Jempol,2024,187.61188
+Negeri Sembilan,Kuala Pilah,2024,137.69054
+Negeri Sembilan,Nilai,2024,571.9194
+Negeri Sembilan,Port Dickson,2024,239.92789
+Negeri Sembilan,Rembau,2024,83.228546
+Negeri Sembilan,Seremban,2024,900.9487
+Negeri Sembilan,Tampin,2024,109.43135
+Pahang,Bentong,2024,278.62595
+Pahang,Bera,2024,111.893616
+Pahang,Jerantut,2024,129.23463
+Pahang,Kuala Lipis,2024,81.95577
+Pahang,Kuantan,2024,832.44183
+Pahang,Maran,2024,153.89525
+Pahang,Pekan,2024,107.85645
+Pahang,Raub,2024,89.50359
+Pahang,Rompin,2024,142.61557
+Pahang,Temerloh,2024,212.06847
+Perak,Batu Gajah,2024,89.1789
+Perak,Gerik,2024,62.64198
+Perak,Hilir Perak,2024,412.02036
+Perak,Ipoh,2024,1446.6699
+Perak,Kampar,2024,112.802925
+Perak,Kerian,2024,161.21822
+Perak,Kuala Kangsar,2024,98.68295
+Perak,Manjung,2024,349.18182
+Perak,Pengkalan Hulu,2024,13.992531
+Perak,Perak Tengah,2024,120.923836
+Perak,Selama,2024,34.780422
+Perak,Sungai Siput,2024,83.39691
+Perak,Taiping,2024,432.83173
+Perak,Tanjong Malim,2024,96.40237
+Perak,Tapah,2024,144.20065
+Perlis,Arau,2024,98.07744
+Perlis,Kangar,2024,214.09743
+Perlis,Padang Besar,2024,64.53466
+Pulau Pinang,Barat Daya,2024,387.51392
+Pulau Pinang,Seberang Perai Selatan,2024,333.31033
+Pulau Pinang,Seberang Perai Tengah,2024,1148.971
+Pulau Pinang,Seberang Perai Utara,2024,723.5307
+Pulau Pinang,Timur Laut,2024,1154.6122
+Sabah,Beaufort,2024,83.63846
+Sabah,Beluran,2024,66.81011
+Sabah,Keningau,2024,142.03526
+Sabah,Kota Belud,2024,76.80111
+Sabah,Kota Kinabalu,2024,997.2454
+Sabah,Kota Kinabatangan,2024,68.44251
+Sabah,Kota Marudu,2024,76.0151
+Sabah,Kudat,2024,46.944588
+Sabah,Kunak,2024,50.310516
+Sabah,Lahad Datu,2024,207.33849
+Sabah,Papar,2024,168.28574
+Sabah,Penampang,2024,322.56766
+Sabah,Ranau,2024,69.482124
+Sabah,Sandakan,2024,480.18103
+Sabah,Semporna,2024,229.17526
+Sabah,Sipitang,2024,46.77038
+Sabah,Tawau,2024,730.42444
+Sabah,Tenom,2024,44.147453
+Sabah,Tuaran,2024,76.04876
+Sabah,W.P. Labuan,2024,146.06561
+Sarawak,Bau,2024,62.408394
+Sarawak,Belaga,2024,35.724335
+Sarawak,Betong,2024,62.158905
+Sarawak,Bintulu,2024,384.05093
+Sarawak,Dalat,2024,14.758345
+Sarawak,Julau,2024,12.778829
+Sarawak,Kanowit,2024,11.321366
+Sarawak,Kapit,2024,36.90601
+Sarawak,Kota Samarahan,2024,249.33679
+Sarawak,Kuching,2024,930.3846
+Sarawak,Lawas,2024,34.36472
+Sarawak,Limbang,2024,34.9048
+Sarawak,Lubok Antu,2024,21.713345
+Sarawak,Lundu,2024,53.118553
+Sarawak,Marudi,2024,67.92683
+Sarawak,Matu Daro,2024,29.662413
+Sarawak,Meradong,2024,40.8121
+Sarawak,Miri,2024,482.52454
+Sarawak,Mukah,2024,56.19879
+Sarawak,Padawan,2024,667.30304
+Sarawak,Saratok,2024,34.652313
+Sarawak,Sarikei,2024,96.46484
+Sarawak,Serian,2024,105.067535
+Sarawak,Sibu,2024,535.5005
+Sarawak,Simunjan,2024,39.224777
+Sarawak,Song,2024,7.330501
+Sarawak,Sri Aman,2024,80.9198
+Sarawak,Tatau,2024,17.304983
+Selangor,Ampang Jaya,2024,1479.0399
+Selangor,Gombak,2024,1920.3962
+Selangor,Hulu Selangor,2024,356.6304
+Selangor,Kajang,2024,1871.0223
+Selangor,Klang Selatan,2024,1379.1022
+Selangor,Klang Utara,2024,887.4985
+Selangor,Kuala Langat,2024,449.00812
+Selangor,Kuala Selangor,2024,400.05856
+Selangor,Petaling Jaya,2024,2093.8545
+Selangor,Sabak Bernam,2024,211.35931
+Selangor,Sepang,2024,654.8559
+Selangor,Serdang,2024,1149.7466
+Selangor,Shah Alam,2024,927.4603
+Selangor,Subang Jaya,2024,961.2218
+Terengganu,Besut,2024,268.91678
+Terengganu,Dungun,2024,195.02116
+Terengganu,Hulu Terengganu,2024,91.68033
+Terengganu,Kemaman,2024,271.80466
+Terengganu,Kuala Terengganu,2024,433.92422
+Terengganu,Marang,2024,106.031555
+Terengganu,Setiu,2024,57.393063
+W.P. Kuala Lumpur,Brickfields,2024,1129.3975
+W.P. Kuala Lumpur,Cheras,2024,1053.9805
+W.P. Kuala Lumpur,Dang Wangi,2024,1721.3193
+W.P. Kuala Lumpur,Sentul,2024,1493.8317
+W.P. Kuala Lumpur,W.P. Putrajaya,2024,158.70566
+W.P. Kuala Lumpur,Wangsa Maju,2024,1332.1833
+Johor,Batu Pahat,2025,466.2438
+Johor,Iskandar Puteri,2025,528.1185
+Johor,Johor Bahru Selatan,2025,1713.5623
+Johor,Johor Bahru Utara,2025,998.5913
+Johor,Kluang,2025,429.37994
+Johor,Kota Tinggi,2025,348.8982
+Johor,Kulaijaya,2025,450.3533
+Johor,Ledang,2025,153.4279
+Johor,Mersing,2025,99.39932
+Johor,Muar,2025,250.77713
+Johor,Nusajaya,2025,78.23943
+Johor,Pontian,2025,205.09387
+Johor,Segamat,2025,238.342
+Johor,Seri Alam,2025,1056.2971
+Kedah,Baling,2025,254.21495
+Kedah,Kota Setar,2025,1115.2876
+Kedah,Kuala Muda,2025,1380.6882
+Kedah,Kubang Pasu,2025,452.19363
+Kedah,Kulim,2025,636.5471
+Kedah,Langkawi,2025,286.42175
+Kedah,Padang Terap,2025,86.94274
+Kedah,Pendang,2025,180.68712
+Kedah,Sik,2025,52.818172
+Kedah,Yan,2025,100.42973
+Kelantan,Bachok,2025,199.07101
+Kelantan,Gua Musang,2025,126.27092
+Kelantan,Jeli,2025,37.390053
+Kelantan,Kota Bharu,2025,1105.6199
+Kelantan,Kuala Krai,2025,121.39015
+Kelantan,Machang,2025,160.14378
+Kelantan,Pasir Mas,2025,260.17966
+Kelantan,Pasir Puteh,2025,250.00087
+Kelantan,Tanah Merah,2025,178.0525
+Kelantan,Tumpat,2025,228.58812
+Melaka,Alor Gajah,2025,270.31354
+Melaka,Jasin,2025,178.36021
+Melaka,Melaka Tengah,2025,1468.5715
+Negeri Sembilan,Jelebu,2025,54.34375
+Negeri Sembilan,Jempol,2025,184.7825
+Negeri Sembilan,Kuala Pilah,2025,149.4387
+Negeri Sembilan,Nilai,2025,650.76373
+Negeri Sembilan,Port Dickson,2025,254.72424
+Negeri Sembilan,Rembau,2025,91.13622
+Negeri Sembilan,Seremban,2025,968.09015
+Negeri Sembilan,Tampin,2025,130.3267
+Pahang,Bentong,2025,295.4801
+Pahang,Bera,2025,107.686005
+Pahang,Jerantut,2025,134.58072
+Pahang,Kuala Lipis,2025,84.57407
+Pahang,Kuantan,2025,940.495
+Pahang,Maran,2025,166.12161
+Pahang,Pekan,2025,120.29315
+Pahang,Raub,2025,86.71296
+Pahang,Rompin,2025,145.75586
+Pahang,Temerloh,2025,219.48889
+Perak,Batu Gajah,2025,79.984055
+Perak,Gerik,2025,60.463226
+Perak,Hilir Perak,2025,413.35977
+Perak,Ipoh,2025,1420.427
+Perak,Kampar,2025,123.131966
+Perak,Kerian,2025,154.23213
+Perak,Kuala Kangsar,2025,98.77697
+Perak,Manjung,2025,383.96222
+Perak,Pengkalan Hulu,2025,12.77848
+Perak,Perak Tengah,2025,108.76741
+Perak,Selama,2025,28.899044
+Perak,Sungai Siput,2025,86.70668
+Perak,Taiping,2025,475.2646
+Perak,Tanjong Malim,2025,99.95135
+Perak,Tapah,2025,138.55376
+Perlis,Arau,2025,101.268234
+Perlis,Kangar,2025,241.22083
+Perlis,Padang Besar,2025,62.47228
+Pulau Pinang,Barat Daya,2025,373.63068
+Pulau Pinang,Seberang Perai Selatan,2025,330.0173
+Pulau Pinang,Seberang Perai Tengah,2025,1265.8838
+Pulau Pinang,Seberang Perai Utara,2025,736.54474
+Pulau Pinang,Timur Laut,2025,1116.0833
+Sabah,Beaufort,2025,94.24115
+Sabah,Beluran,2025,56.322132
+Sabah,Keningau,2025,141.994
+Sabah,Kota Belud,2025,94.51063
+Sabah,Kota Kinabalu,2025,994.87476
+Sabah,Kota Kinabatangan,2025,57.35483
+Sabah,Kota Marudu,2025,73.38474
+Sabah,Kudat,2025,41.930527
+Sabah,Kunak,2025,51.327435
+Sabah,Lahad Datu,2025,209.87955
+Sabah,Papar,2025,177.56688
+Sabah,Penampang,2025,349.92615
+Sabah,Ranau,2025,63.42429
+Sabah,Sandakan,2025,453.7129
+Sabah,Semporna,2025,235.66176
+Sabah,Sipitang,2025,56.661716
+Sabah,Tawau,2025,679.61884
+Sabah,Tenom,2025,36.68133
+Sabah,Tuaran,2025,79.44996
+Sabah,W.P. Labuan,2025,158.45895
+Sarawak,Bau,2025,53.73468
+Sarawak,Belaga,2025,36.4554
+Sarawak,Betong,2025,55.19736
+Sarawak,Bintulu,2025,386.01837
+Sarawak,Dalat,2025,16.497894
+Sarawak,Julau,2025,9.338214
+Sarawak,Kanowit,2025,13.273876
+Sarawak,Kapit,2025,38.78972
+Sarawak,Kota Samarahan,2025,262.50647
+Sarawak,Kuching,2025,1013.0449
+Sarawak,Lawas,2025,35.049
+Sarawak,Limbang,2025,40.41318
+Sarawak,Lubok Antu,2025,20.274775
+Sarawak,Lundu,2025,47.503433
+Sarawak,Marudi,2025,64.22424
+Sarawak,Matu Daro,2025,24.45827
+Sarawak,Meradong,2025,38.979416
+Sarawak,Miri,2025,608.7601
+Sarawak,Mukah,2025,59.84074
+Sarawak,Padawan,2025,646.18896
+Sarawak,Saratok,2025,29.572723
+Sarawak,Sarikei,2025,111.883224
+Sarawak,Serian,2025,97.48861
+Sarawak,Sibu,2025,572.4762
+Sarawak,Simunjan,2025,35.966064
+Sarawak,Song,2025,6.7539577
+Sarawak,Sri Aman,2025,81.68999
+Sarawak,Tatau,2025,17.34041
+Selangor,Ampang Jaya,2025,1655.8844
+Selangor,Gombak,2025,2014.9741
+Selangor,Hulu Selangor,2025,369.51892
+Selangor,Kajang,2025,2021.5255
+Selangor,Klang Selatan,2025,1415.4595
+Selangor,Klang Utara,2025,897.10004
+Selangor,Kuala Langat,2025,441.31296
+Selangor,Kuala Selangor,2025,360.2758
+Selangor,Petaling Jaya,2025,2406.4966
+Selangor,Sabak Bernam,2025,237.48257
+Selangor,Sepang,2025,620.206
+Selangor,Serdang,2025,1281.257
+Selangor,Shah Alam,2025,987.8627
+Selangor,Subang Jaya,2025,1010.5285
+Terengganu,Besut,2025,300.08585
+Terengganu,Dungun,2025,211.69482
+Terengganu,Hulu Terengganu,2025,93.84101
+Terengganu,Kemaman,2025,262.28198
+Terengganu,Kuala Terengganu,2025,466.55185
+Terengganu,Marang,2025,115.82301
+Terengganu,Setiu,2025,66.566315
+W.P. Kuala Lumpur,Brickfields,2025,1314.1876
+W.P. Kuala Lumpur,Cheras,2025,1205.1339
+W.P. Kuala Lumpur,Dang Wangi,2025,2044.8436
+W.P. Kuala Lumpur,Sentul,2025,1699.4382
+W.P. Kuala Lumpur,W.P. Putrajaya,2025,192.31657
+W.P. Kuala Lumpur,Wangsa Maju,2025,1551.2543
+Johor,Batu Pahat,2026,474.13553
+Johor,Iskandar Puteri,2026,513.9588
+Johor,Johor Bahru Selatan,2026,1784.2023
+Johor,Johor Bahru Utara,2026,1062.6556
+Johor,Kluang,2026,437.43134
+Johor,Kota Tinggi,2026,363.1639
+Johor,Kulaijaya,2026,467.55463
+Johor,Ledang,2026,156.03076
+Johor,Mersing,2026,101.60109
+Johor,Muar,2026,232.57114
+Johor,Nusajaya,2026,93.94854
+Johor,Pontian,2026,195.07361
+Johor,Segamat,2026,247.59496
+Johor,Seri Alam,2026,1088.5453
+Kedah,Baling,2026,239.64917
+Kedah,Kota Setar,2026,1078.17
+Kedah,Kuala Muda,2026,1372.6405
+Kedah,Kubang Pasu,2026,447.64105
+Kedah,Kulim,2026,625.574
+Kedah,Langkawi,2026,293.8533
+Kedah,Padang Terap,2026,78.65595
+Kedah,Pendang,2026,174.84543
+Kedah,Sik,2026,50.888283
+Kedah,Yan,2026,99.698364
+Kelantan,Bachok,2026,206.76346
+Kelantan,Gua Musang,2026,125.579384
+Kelantan,Jeli,2026,35.59211
+Kelantan,Kota Bharu,2026,1135.3174
+Kelantan,Kuala Krai,2026,129.5779
+Kelantan,Machang,2026,166.37396
+Kelantan,Pasir Mas,2026,275.50833
+Kelantan,Pasir Puteh,2026,261.36472
+Kelantan,Tanah Merah,2026,172.47858
+Kelantan,Tumpat,2026,233.51003
+Melaka,Alor Gajah,2026,265.54547
+Melaka,Jasin,2026,175.0966
+Melaka,Melaka Tengah,2026,1527.2771
+Negeri Sembilan,Jelebu,2026,51.23986
+Negeri Sembilan,Jempol,2026,183.23175
+Negeri Sembilan,Kuala Pilah,2026,152.28508
+Negeri Sembilan,Nilai,2026,683.73083
+Negeri Sembilan,Port Dickson,2026,261.9321
+Negeri Sembilan,Rembau,2026,93.87564
+Negeri Sembilan,Seremban,2026,986.59595
+Negeri Sembilan,Tampin,2026,140.4001
+Pahang,Bentong,2026,295.64606
+Pahang,Bera,2026,106.13398
+Pahang,Jerantut,2026,136.10135
+Pahang,Kuala Lipis,2026,85.71197
+Pahang,Kuantan,2026,993.078
+Pahang,Maran,2026,171.70065
+Pahang,Pekan,2026,129.65132
+Pahang,Raub,2026,83.09363
+Pahang,Rompin,2026,146.89091
+Pahang,Temerloh,2026,221.81053
+Perak,Batu Gajah,2026,73.38815
+Perak,Gerik,2026,58.264736
+Perak,Hilir Perak,2026,410.2879
+Perak,Ipoh,2026,1374.3918
+Perak,Kampar,2026,126.70597
+Perak,Kerian,2026,154.18686
+Perak,Kuala Kangsar,2026,96.26135
+Perak,Manjung,2026,397.74374
+Perak,Pengkalan Hulu,2026,11.842594
+Perak,Perak Tengah,2026,100.45769
+Perak,Selama,2026,26.017147
+Perak,Sungai Siput,2026,85.85877
+Perak,Taiping,2026,489.5956
+Perak,Tanjong Malim,2026,99.47647
+Perak,Tapah,2026,133.82292
+Perlis,Arau,2026,101.91256
+Perlis,Kangar,2026,258.96716
+Perlis,Padang Besar,2026,60.97657
+Pulau Pinang,Barat Daya,2026,365.78174
+Pulau Pinang,Seberang Perai Selatan,2026,328.69965
+Pulau Pinang,Seberang Perai Tengah,2026,1327.144
+Pulau Pinang,Seberang Perai Utara,2026,741.54584
+Pulau Pinang,Timur Laut,2026,1103.653
+Sabah,Beaufort,2026,98.588036
+Sabah,Beluran,2026,50.049633
+Sabah,Keningau,2026,139.27254
+Sabah,Kota Belud,2026,104.35604
+Sabah,Kota Kinabalu,2026,985.9879
+Sabah,Kota Kinabatangan,2026,52.624226
+Sabah,Kota Marudu,2026,70.38213
+Sabah,Kudat,2026,37.393562
+Sabah,Kunak,2026,51.419636
+Sabah,Lahad Datu,2026,207.84918
+Sabah,Papar,2026,178.56618
+Sabah,Penampang,2026,357.9278
+Sabah,Ranau,2026,59.522095
+Sabah,Sandakan,2026,441.89014
+Sabah,Semporna,2026,242.80148
+Sabah,Sipitang,2026,61.92458
+Sabah,Tawau,2026,617.10614
+Sabah,Tenom,2026,32.470425
+Sabah,Tuaran,2026,79.72278
+Sabah,W.P. Labuan,2026,164.0485
+Sarawak,Bau,2026,46.523186
+Sarawak,Belaga,2026,36.347233
+Sarawak,Betong,2026,54.777348
+Sarawak,Bintulu,2026,379.8864
+Sarawak,Dalat,2026,17.192932
+Sarawak,Julau,2026,6.6963353
+Sarawak,Kanowit,2026,14.028032
+Sarawak,Kapit,2026,38.808247
+Sarawak,Kota Samarahan,2026,275.86722
+Sarawak,Kuching,2026,1050.1964
+Sarawak,Lawas,2026,34.537086
+Sarawak,Limbang,2026,42.935043
+Sarawak,Lubok Antu,2026,19.023182
+Sarawak,Lundu,2026,46.37796
+Sarawak,Marudi,2026,62.04513
+Sarawak,Matu Daro,2026,20.962729
+Sarawak,Meradong,2026,36.96828
+Sarawak,Miri,2026,671.2754
+Sarawak,Mukah,2026,61.628895
+Sarawak,Padawan,2026,647.58765
+Sarawak,Saratok,2026,27.87551
+Sarawak,Sarikei,2026,117.943
+Sarawak,Serian,2026,93.56827
+Sarawak,Sibu,2026,589.10986
+Sarawak,Simunjan,2026,33.735367
+Sarawak,Song,2026,6.4201927
+Sarawak,Sri Aman,2026,82.89012
+Sarawak,Tatau,2026,16.864231
+Selangor,Ampang Jaya,2026,1732.4708
+Selangor,Gombak,2026,2059.0127
+Selangor,Hulu Selangor,2026,389.5341
+Selangor,Kajang,2026,2089.3203
+Selangor,Klang Selatan,2026,1465.2448
+Selangor,Klang Utara,2026,897.5928
+Selangor,Kuala Langat,2026,443.6872
+Selangor,Kuala Selangor,2026,356.35202
+Selangor,Petaling Jaya,2026,2541.09
+Selangor,Sabak Bernam,2026,248.43124
+Selangor,Sepang,2026,593.92285
+Selangor,Serdang,2026,1365.9764
+Selangor,Shah Alam,2026,1011.7809
+Selangor,Subang Jaya,2026,1020.0257
+Terengganu,Besut,2026,316.55826
+Terengganu,Dungun,2026,220.60056
+Terengganu,Hulu Terengganu,2026,96.363686
+Terengganu,Kemaman,2026,259.26074
+Terengganu,Kuala Terengganu,2026,485.1089
+Terengganu,Marang,2026,123.71039
+Terengganu,Setiu,2026,70.12739
+W.P. Kuala Lumpur,Brickfields,2026,1397.6017
+W.P. Kuala Lumpur,Cheras,2026,1277.779
+W.P. Kuala Lumpur,Dang Wangi,2026,2197.624
+W.P. Kuala Lumpur,Sentul,2026,1801.3857
+W.P. Kuala Lumpur,W.P. Putrajaya,2026,209.90343
+W.P. Kuala Lumpur,Wangsa Maju,2026,1651.879
+Johor,Batu Pahat,2027,466.81165
+Johor,Iskandar Puteri,2027,497.9667
+Johor,Johor Bahru Selatan,2027,1775.94
+Johor,Johor Bahru Utara,2027,1073.5165
+Johor,Kluang,2027,428.93585
+Johor,Kota Tinggi,2027,361.36774
+Johor,Kulaijaya,2027,466.8317
+Johor,Ledang,2027,153.4442
+Johor,Mersing,2027,101.46475
+Johor,Muar,2027,220.58339
+Johor,Nusajaya,2027,105.56626
+Johor,Pontian,2027,181.89113
+Johor,Segamat,2027,247.76852
+Johor,Seri Alam,2027,1083.3387
+Kedah,Baling,2027,240.07037
+Kedah,Kota Setar,2027,1071.4747
+Kedah,Kuala Muda,2027,1359.7493
+Kedah,Kubang Pasu,2027,443.28555
+Kedah,Kulim,2027,626.4958
+Kedah,Langkawi,2027,293.9892
+Kedah,Padang Terap,2027,77.42111
+Kedah,Pendang,2027,174.94878
+Kedah,Sik,2027,50.204803
+Kedah,Yan,2027,98.35634
+Kelantan,Bachok,2027,210.76112
+Kelantan,Gua Musang,2027,124.65764
+Kelantan,Jeli,2027,35.39424
+Kelantan,Kota Bharu,2027,1132.6893
+Kelantan,Kuala Krai,2027,131.31998
+Kelantan,Machang,2027,168.22424
+Kelantan,Pasir Mas,2027,279.1156
+Kelantan,Pasir Puteh,2027,266.01733
+Kelantan,Tanah Merah,2027,171.33601
+Kelantan,Tumpat,2027,234.57726
+Melaka,Alor Gajah,2027,262.15714
+Melaka,Jasin,2027,172.09814
+Melaka,Melaka Tengah,2027,1520.7904
+Negeri Sembilan,Jelebu,2027,51.315495
+Negeri Sembilan,Jempol,2027,179.08043
+Negeri Sembilan,Kuala Pilah,2027,151.42465
+Negeri Sembilan,Nilai,2027,684.7076
+Negeri Sembilan,Port Dickson,2027,262.47427
+Negeri Sembilan,Rembau,2027,93.1374
+Negeri Sembilan,Seremban,2027,975.7698
+Negeri Sembilan,Tampin,2027,144.71254
+Pahang,Bentong,2027,291.25812
+Pahang,Bera,2027,107.39345
+Pahang,Jerantut,2027,134.9683
+Pahang,Kuala Lipis,2027,84.87224
+Pahang,Kuantan,2027,1003.8702
+Pahang,Maran,2027,171.395
+Pahang,Pekan,2027,133.19667
+Pahang,Raub,2027,81.938065
+Pahang,Rompin,2027,144.80464
+Pahang,Temerloh,2027,219.49382
+Perak,Batu Gajah,2027,72.40221
+Perak,Gerik,2027,57.18856
+Perak,Hilir Perak,2027,403.92593
+Perak,Ipoh,2027,1348.1011
+Perak,Kampar,2027,126.343315
+Perak,Kerian,2027,156.57419
+Perak,Kuala Kangsar,2027,95.66541
+Perak,Manjung,2027,395.30206
+Perak,Pengkalan Hulu,2027,11.202009
+Perak,Perak Tengah,2027,96.473656
+Perak,Selama,2027,25.158272
+Perak,Sungai Siput,2027,84.92017
+Perak,Taiping,2027,488.10474
+Perak,Tanjong Malim,2027,97.490746
+Perak,Tapah,2027,127.605835
+Perlis,Arau,2027,100.577896
+Perlis,Kangar,2027,266.12222
+Perlis,Padang Besar,2027,64.46739
+Pulau Pinang,Barat Daya,2027,359.67853
+Pulau Pinang,Seberang Perai Selatan,2027,326.42435
+Pulau Pinang,Seberang Perai Tengah,2027,1334.2521
+Pulau Pinang,Seberang Perai Utara,2027,739.71356
+Pulau Pinang,Timur Laut,2027,1103.4286
+Sabah,Beaufort,2027,98.40257
+Sabah,Beluran,2027,48.488773
+Sabah,Keningau,2027,133.65688
+Sabah,Kota Belud,2027,108.40815
+Sabah,Kota Kinabalu,2027,1013.3497
+Sabah,Kota Kinabatangan,2027,51.881348
+Sabah,Kota Marudu,2027,69.87898
+Sabah,Kudat,2027,34.853024
+Sabah,Kunak,2027,50.18134
+Sabah,Lahad Datu,2027,201.15488
+Sabah,Papar,2027,173.14975
+Sabah,Penampang,2027,356.12958
+Sabah,Ranau,2027,58.931656
+Sabah,Sandakan,2027,448.60843
+Sabah,Semporna,2027,240.21642
+Sabah,Sipitang,2027,63.96945
+Sabah,Tawau,2027,598.7768
+Sabah,Tenom,2027,30.933237
+Sabah,Tuaran,2027,78.26222
+Sabah,W.P. Labuan,2027,163.20941
+Sarawak,Bau,2027,43.81951
+Sarawak,Belaga,2027,34.711746
+Sarawak,Betong,2027,57.4036
+Sarawak,Bintulu,2027,379.36234
+Sarawak,Dalat,2027,17.049637
+Sarawak,Julau,2027,6.3308797
+Sarawak,Kanowit,2027,14.144205
+Sarawak,Kapit,2027,38.038284
+Sarawak,Kota Samarahan,2027,286.04025
+Sarawak,Kuching,2027,1054.0392
+Sarawak,Lawas,2027,33.76682
+Sarawak,Limbang,2027,43.54132
+Sarawak,Lubok Antu,2027,18.286171
+Sarawak,Lundu,2027,46.20236
+Sarawak,Marudi,2027,61.17332
+Sarawak,Matu Daro,2027,18.908379
+Sarawak,Meradong,2027,34.182564
+Sarawak,Miri,2027,693.9561
+Sarawak,Mukah,2027,60.796875
+Sarawak,Padawan,2027,653.4082
+Sarawak,Saratok,2027,28.374834
+Sarawak,Sarikei,2027,118.94106
+Sarawak,Serian,2027,95.98774
+Sarawak,Sibu,2027,585.7266
+Sarawak,Simunjan,2027,32.68243
+Sarawak,Song,2027,6.883093
+Sarawak,Sri Aman,2027,86.28123
+Sarawak,Tatau,2027,17.056793
+Selangor,Ampang Jaya,2027,1728.5011
+Selangor,Gombak,2027,2041.8043
+Selangor,Hulu Selangor,2027,394.2124
+Selangor,Kajang,2027,2090.2397
+Selangor,Klang Selatan,2027,1473.7106
+Selangor,Klang Utara,2027,890.21405
+Selangor,Kuala Langat,2027,452.41815
+Selangor,Kuala Selangor,2027,359.4733
+Selangor,Petaling Jaya,2027,2563.9077
+Selangor,Sabak Bernam,2027,248.46002
+Selangor,Sepang,2027,582.408
+Selangor,Serdang,2027,1390.2528
+Selangor,Shah Alam,2027,1007.8763
+Selangor,Subang Jaya,2027,1005.3964
+Terengganu,Besut,2027,320.29694
+Terengganu,Dungun,2027,223.202
+Terengganu,Hulu Terengganu,2027,98.134834
+Terengganu,Kemaman,2027,263.24548
+Terengganu,Kuala Terengganu,2027,494.58765
+Terengganu,Marang,2027,126.69405
+Terengganu,Setiu,2027,71.14426
+W.P. Kuala Lumpur,Brickfields,2027,1413.8915
+W.P. Kuala Lumpur,Cheras,2027,1294.2269
+W.P. Kuala Lumpur,Dang Wangi,2027,2241.3906
+W.P. Kuala Lumpur,Sentul,2027,1821.2069
+W.P. Kuala Lumpur,W.P. Putrajaya,2027,216.78374
+W.P. Kuala Lumpur,Wangsa Maju,2027,1673.2489
+Johor,Batu Pahat,2028,454.6655
+Johor,Iskandar Puteri,2028,497.10428
+Johor,Johor Bahru Selatan,2028,1716.8652
+Johor,Johor Bahru Utara,2028,1040.4302
+Johor,Kluang,2028,418.76407
+Johor,Kota Tinggi,2028,351.30457
+Johor,Kulaijaya,2028,452.48557
+Johor,Ledang,2028,149.38933
+Johor,Mersing,2028,100.12584
+Johor,Muar,2028,226.58888
+Johor,Nusajaya,2028,109.469154
+Johor,Pontian,2028,180.16154
+Johor,Segamat,2028,242.42126
+Johor,Seri Alam,2028,1062.5955
+Kedah,Baling,2028,245.29715
+Kedah,Kota Setar,2028,1077.3263
+Kedah,Kuala Muda,2028,1348.8219
+Kedah,Kubang Pasu,2028,437.04886
+Kedah,Kulim,2028,626.0718
+Kedah,Langkawi,2028,289.74655
+Kedah,Padang Terap,2028,81.44869
+Kedah,Pendang,2028,177.51541
+Kedah,Sik,2028,50.086357
+Kedah,Yan,2028,97.42387
+Kelantan,Bachok,2028,208.63332
+Kelantan,Gua Musang,2028,123.32957
+Kelantan,Jeli,2028,36.14813
+Kelantan,Kota Bharu,2028,1104.0177
+Kelantan,Kuala Krai,2028,127.32943
+Kelantan,Machang,2028,164.197
+Kelantan,Pasir Mas,2028,270.6664
+Kelantan,Pasir Puteh,2028,261.5265
+Kelantan,Tanah Merah,2028,172.09566
+Kelantan,Tumpat,2028,230.9205
+Melaka,Alor Gajah,2028,262.6139
+Melaka,Jasin,2028,172.09837
+Melaka,Melaka Tengah,2028,1473.2389
+Negeri Sembilan,Jelebu,2028,52.168995
+Negeri Sembilan,Jempol,2028,179.60854
+Negeri Sembilan,Kuala Pilah,2028,147.77676
+Negeri Sembilan,Nilai,2028,663.51636
+Negeri Sembilan,Port Dickson,2028,258.75592
+Negeri Sembilan,Rembau,2028,90.25525
+Negeri Sembilan,Seremban,2028,951.0998
+Negeri Sembilan,Tampin,2028,141.56816
+Pahang,Bentong,2028,284.72397
+Pahang,Bera,2028,109.23915
+Pahang,Jerantut,2028,132.825
+Pahang,Kuala Lipis,2028,83.82113
+Pahang,Kuantan,2028,978.3486
+Pahang,Maran,2028,167.70908
+Pahang,Pekan,2028,132.46606
+Pahang,Raub,2028,82.72127
+Pahang,Rompin,2028,142.61305
+Pahang,Temerloh,2028,217.00827
+Perak,Batu Gajah,2028,75.30967
+Perak,Gerik,2028,57.824318
+Perak,Hilir Perak,2028,402.2328
+Perak,Ipoh,2028,1343.7703
+Perak,Kampar,2028,123.13159
+Perak,Kerian,2028,159.89317
+Perak,Kuala Kangsar,2028,95.63252
+Perak,Manjung,2028,384.30884
+Perak,Pengkalan Hulu,2028,11.389455
+Perak,Perak Tengah,2028,99.440445
+Perak,Selama,2028,26.931406
+Perak,Sungai Siput,2028,83.75349
+Perak,Taiping,2028,475.6791
+Perak,Tanjong Malim,2028,95.729965
+Perak,Tapah,2028,127.45583
+Perlis,Arau,2028,99.483826
+Perlis,Kangar,2028,263.13327
+Perlis,Padang Besar,2028,66.50285
+Pulau Pinang,Barat Daya,2028,361.19257
+Pulau Pinang,Seberang Perai Selatan,2028,326.05872
+Pulau Pinang,Seberang Perai Tengah,2028,1304.8242
+Pulau Pinang,Seberang Perai Utara,2028,734.7236
+Pulau Pinang,Timur Laut,2028,1116.8087
+Sabah,Beaufort,2028,95.21741
+Sabah,Beluran,2028,51.619534
+Sabah,Keningau,2028,131.88185
+Sabah,Kota Belud,2028,106.28531
+Sabah,Kota Kinabalu,2028,1025.2913
+Sabah,Kota Kinabatangan,2028,55.435616
+Sabah,Kota Marudu,2028,70.5847
+Sabah,Kudat,2028,35.904705
+Sabah,Kunak,2028,49.330948
+Sabah,Lahad Datu,2028,198.05652
+Sabah,Papar,2028,168.23642
+Sabah,Penampang,2028,346.80872
+Sabah,Ranau,2028,60.67931
+Sabah,Sandakan,2028,461.03723
+Sabah,Semporna,2028,237.18295
+Sabah,Sipitang,2028,62.468323
+Sabah,Tawau,2028,609.42914
+Sabah,Tenom,2028,32.85137
+Sabah,Tuaran,2028,76.6281
+Sabah,W.P. Labuan,2028,159.79884
+Sarawak,Bau,2028,46.0531
+Sarawak,Belaga,2028,33.789326
+Sarawak,Betong,2028,60.648148
+Sarawak,Bintulu,2028,378.39545
+Sarawak,Dalat,2028,16.47582
+Sarawak,Julau,2028,7.6717825
+Sarawak,Kanowit,2028,13.743853
+Sarawak,Kapit,2028,37.15846
+Sarawak,Kota Samarahan,2028,290.01138
+Sarawak,Kuching,2028,1038.8546
+Sarawak,Lawas,2028,33.281902
+Sarawak,Limbang,2028,42.27617
+Sarawak,Lubok Antu,2028,18.732687
+Sarawak,Lundu,2028,47.849617
+Sarawak,Marudi,2028,62.22814
+Sarawak,Matu Daro,2028,20.355785
+Sarawak,Meradong,2028,34.261738
+Sarawak,Miri,2028,681.7174
+Sarawak,Mukah,2028,59.424313
+Sarawak,Padawan,2028,664.7092
+Sarawak,Saratok,2028,30.820454
+Sarawak,Sarikei,2028,115.876945
+Sarawak,Serian,2028,99.21955
+Sarawak,Sibu,2028,578.38885
+Sarawak,Simunjan,2028,33.552025
+Sarawak,Song,2028,7.3126817
+Sarawak,Sri Aman,2028,87.82522
+Sarawak,Tatau,2028,17.237577
+Selangor,Ampang Jaya,2028,1681.4514
+Selangor,Gombak,2028,2009.1011
+Selangor,Hulu Selangor,2028,396.38144
+Selangor,Kajang,2028,2048.1658
+Selangor,Klang Selatan,2028,1464.1277
+Selangor,Klang Utara,2028,885.3
+Selangor,Kuala Langat,2028,458.3925
+Selangor,Kuala Selangor,2028,374.6721
+Selangor,Petaling Jaya,2028,2492.5112
+Selangor,Sabak Bernam,2028,241.66492
+Selangor,Sepang,2028,589.49835
+Selangor,Serdang,2028,1369.5293
+Selangor,Shah Alam,2028,986.87006
+Selangor,Subang Jaya,2028,986.8751
+Terengganu,Besut,2028,315.1715
+Terengganu,Dungun,2028,220.4515
+Terengganu,Hulu Terengganu,2028,98.74071
+Terengganu,Kemaman,2028,270.39972
+Terengganu,Kuala Terengganu,2028,493.1815
+Terengganu,Marang,2028,126.403824
+Terengganu,Setiu,2028,69.32883
+W.P. Kuala Lumpur,Brickfields,2028,1375.4786
+W.P. Kuala Lumpur,Cheras,2028,1262.223
+W.P. Kuala Lumpur,Dang Wangi,2028,2178.643
+W.P. Kuala Lumpur,Sentul,2028,1776.5236
+W.P. Kuala Lumpur,W.P. Putrajaya,2028,211.45853
+W.P. Kuala Lumpur,Wangsa Maju,2028,1623.548

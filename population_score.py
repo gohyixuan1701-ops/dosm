@@ -1,0 +1,193 @@
+
+from pathlib import Path
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+
+from crime_forecast import NAME_ALIASES, FORECAST_YEARS  # reuse the same state-name map and horizon
+
+DATA_DIR = Path(__file__).parent
+STATE_POP_CSV = DATA_DIR / 'population_state.csv'
+DISTRICT_POP_CSV = DATA_DIR / 'population_district.csv'
+STATE_FORECAST_CSV = DATA_DIR / 'population_forecast.csv'
+DISTRICT_FORECAST_CSV = DATA_DIR / 'population_forecast_district.csv'
+
+YEAR_FLOOR = 2021  # exclude the 2020 census-rebasing discontinuity
+
+
+def _load_state_pop():
+    df = pd.read_csv(STATE_POP_CSV)
+    df = df[(df['sex'] == 'both') & (df['age'] == 'overall') & (df['ethnicity'] == 'overall')]
+    df = df.copy()
+    df['year'] = pd.to_datetime(df['date']).dt.year
+    return df[df['year'] >= YEAR_FLOOR]
+
+
+def _load_district_pop():
+    df = pd.read_csv(DISTRICT_POP_CSV)
+    df = df[(df['sex'] == 'both') & (df['age'] == 'overall') & (df['ethnicity'] == 'overall')]
+    df = df.copy()
+    df['year'] = pd.to_datetime(df['date']).dt.year
+    return df  # already 2020-2025 only, no rebasing issue to filter out
+
+
+def _fit_and_predict(years, values, target_year):
+    model = LinearRegression().fit(
+        pd.DataFrame({'year': years}), values
+    )
+    return float(model.predict(pd.DataFrame({'year': [target_year]}))[0])
+
+
+_state_pop_cache = None
+_district_pop_cache = None
+
+
+def predict_state_population(state_name, year):
+    """Return predicted population (thousands) for a state + year, or
+    None if the state isn't found."""
+    global _state_pop_cache
+    if _state_pop_cache is None:
+        _state_pop_cache = _load_state_pop()
+
+    crime_name = NAME_ALIASES.get(state_name, state_name)
+    rows = _state_pop_cache[_state_pop_cache['state'] == crime_name]
+    if rows.empty:
+        return None
+    return _fit_and_predict(rows['year'], rows['population'], year)
+
+
+def predict_district_population(state_name, district_name, year):
+    """Return predicted population (thousands) for a district + year,
+    or None if that exact district name isn't in the population data
+    (see DISTRICT POPULATION COVERAGE above)."""
+    global _district_pop_cache
+    if _district_pop_cache is None:
+        _district_pop_cache = _load_district_pop()
+
+    crime_name = NAME_ALIASES.get(state_name, state_name)
+    rows = _district_pop_cache[
+        (_district_pop_cache['state'] == crime_name) &
+        (_district_pop_cache['district'] == district_name)
+    ]
+    if rows.empty or rows['year'].nunique() < 2:
+        return None
+    return _fit_and_predict(rows['year'], rows['population'], year)
+
+
+def crime_rate_per_capita(crimes, population_thousands):
+    """Crimes per 1,000 people -- the standard way crime is normalised
+    for fair comparison across places of different sizes."""
+    if not population_thousands or population_thousands <= 0:
+        return None
+    return crimes / population_thousands
+
+
+def forecast_all_states():
+    """Predict every state's population for every FORECAST_YEARS year
+    (2024-2028, same horizon as the crime forecast). Returns a
+    long-format DataFrame: state, year, predicted_population."""
+    global _state_pop_cache
+    if _state_pop_cache is None:
+        _state_pop_cache = _load_state_pop()
+    states = sorted(_state_pop_cache['state'].unique())
+
+    rows = []
+    for state in states:
+        for year in FORECAST_YEARS:
+            rows.append({
+                'state': state,
+                'year': year,
+                'predicted_population': predict_state_population(state, year),
+            })
+    return pd.DataFrame(rows)
+
+
+def forecast_all_districts():
+    """Predict every district's population for every FORECAST_YEARS
+    year. Only includes districts with at least 2 years of source data
+    (predict_district_population() returns None otherwise, and those
+    rows are skipped -- this file only ever contains real predictions,
+    never silent placeholders)."""
+    global _district_pop_cache
+    if _district_pop_cache is None:
+        _district_pop_cache = _load_district_pop()
+    pairs = _district_pop_cache[['state', 'district']].drop_duplicates()
+
+    rows = []
+    for _, r in pairs.iterrows():
+        for year in FORECAST_YEARS:
+            pop = predict_district_population(r['state'], r['district'], year)
+            if pop is not None:
+                rows.append({
+                    'state': r['state'],
+                    'district': r['district'],
+                    'year': year,
+                    'predicted_population': pop,
+                })
+    return pd.DataFrame(rows)
+
+
+def load_state_population_forecast():
+    """Fast path: read the saved state-level forecast file."""
+    if not STATE_FORECAST_CSV.exists():
+        return None
+    return pd.read_csv(STATE_FORECAST_CSV)
+
+
+def population_score(state_name, year):
+    """Return (score 0-100, reason). Relative ranking by population
+    across all 16 states for the given year.
+
+    ASSUMPTION (confirm/flip if you disagree): HIGHER population ->
+    HIGHER score, on the basis that a bigger state generally has more
+    infrastructure/amenities for a visitor. This is a judgment call,
+    not a DOSM-derived fact -- reasonable people could argue the
+    opposite (a smaller, quieter state scores better for some
+    travellers). Swap (this_value - lo) for (hi - this_value) below
+    to invert it if you'd rather score the other way."""
+    global _state_pop_cache
+    if _state_pop_cache is None:
+        _state_pop_cache = _load_state_pop()
+    states = sorted(_state_pop_cache['state'].unique())
+
+    values = {s: predict_state_population(s, year) for s in states}
+    values = {s: v for s, v in values.items() if v is not None}
+
+    crime_name = NAME_ALIASES.get(state_name, state_name)
+    if crime_name not in values or len(values) < 2:
+        return 75, 'No population data available for this state/year; a neutral score is used.'
+
+    series = pd.Series(values)
+    lo, hi = series.min(), series.max()
+    this_value = series[crime_name]
+    score = 100 if hi == lo else round(100 * (this_value - lo) / (hi - lo))
+    reason = f'Estimated population ~{this_value:,.0f} thousand in {year}, relative to other states (higher = more infrastructure/amenities, assumption).'
+    return score, reason
+
+
+def load_district_population_forecast():
+    """Fast path: read the saved district-level forecast file."""
+    if not DISTRICT_FORECAST_CSV.exists():
+        return None
+    return pd.read_csv(DISTRICT_FORECAST_CSV)
+
+
+if __name__ == '__main__':
+    print("Quick spot-check (a few states/districts, printed only):")
+    for state in ['Selangor', 'Sabah', 'Perlis']:
+        for yr in [2026, 2027, 2028]:
+            print(f"  {state} {yr}: {predict_state_population(state, yr):,.0f} thousand")
+    for d in ['Batu Pahat', 'Johor Bahru Selatan', 'Kluang']:
+        pop = predict_district_population('Johor', d, 2026)
+        print(f"  Johor / {d}: {'matched, ' + format(pop, ',.0f') + ' thousand' if pop else 'no exact match'}")
+
+    print("\nForecasting all states...")
+    state_forecast = forecast_all_states()
+    state_forecast['predicted_population'] = state_forecast['predicted_population'].round(1)
+    state_forecast.to_csv(STATE_FORECAST_CSV, index=False)
+    print(f"Saved {len(state_forecast)} rows to {STATE_FORECAST_CSV}")
+
+    print("Forecasting all districts (this takes a little longer)...")
+    district_forecast = forecast_all_districts()
+    district_forecast['predicted_population'] = district_forecast['predicted_population'].round(1)
+    district_forecast.to_csv(DISTRICT_FORECAST_CSV, index=False)
+    print(f"Saved {len(district_forecast)} rows to {DISTRICT_FORECAST_CSV}")

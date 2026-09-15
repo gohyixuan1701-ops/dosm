@@ -1,0 +1,81 @@
+state,year,predicted_population
+Johor,2024,4151.3
+Johor,2025,4197.7
+Johor,2026,4244.2
+Johor,2027,4290.7
+Johor,2028,4337.1
+Kedah,2024,2206.9
+Kedah,2025,2225.4
+Kedah,2026,2243.9
+Kedah,2027,2262.4
+Kedah,2028,2281.0
+Kelantan,2024,1882.2
+Kelantan,2025,1905.7
+Kelantan,2026,1929.2
+Kelantan,2027,1952.7
+Kelantan,2028,1976.2
+Melaka,2024,1038.8
+Melaka,2025,1050.6
+Melaka,2026,1062.4
+Melaka,2027,1074.2
+Melaka,2028,1086.0
+Negeri Sembilan,2024,1233.1
+Negeri Sembilan,2025,1242.9
+Negeri Sembilan,2026,1252.7
+Negeri Sembilan,2027,1262.6
+Negeri Sembilan,2028,1272.4
+Pahang,2024,1657.4
+Pahang,2025,1675.5
+Pahang,2026,1693.7
+Pahang,2027,1711.8
+Pahang,2028,1730.0
+Perak,2024,2556.1
+Perak,2025,2570.9
+Perak,2026,2585.7
+Perak,2027,2600.4
+Perak,2028,2615.2
+Perlis,2024,294.7
+Perlis,2025,296.8
+Perlis,2026,298.9
+Perlis,2027,301.0
+Perlis,2028,303.1
+Pulau Pinang,2024,1785.8
+Pulau Pinang,2025,1801.7
+Pulau Pinang,2026,1817.7
+Pulau Pinang,2027,1833.7
+Pulau Pinang,2028,1849.7
+Sabah,2024,3656.6
+Sabah,2025,3740.4
+Sabah,2026,3824.3
+Sabah,2027,3908.2
+Sabah,2028,3992.1
+Sarawak,2024,2512.5
+Sarawak,2025,2528.3
+Sarawak,2026,2544.1
+Sarawak,2027,2559.8
+Sarawak,2028,2575.6
+Selangor,2024,7299.0
+Selangor,2025,7396.9
+Selangor,2026,7494.7
+Selangor,2027,7592.6
+Selangor,2028,7690.5
+Terengganu,2024,1226.9
+Terengganu,2025,1245.4
+Terengganu,2026,1264.0
+Terengganu,2027,1282.6
+Terengganu,2028,1301.2
+W.P. Kuala Lumpur,2024,2040.2
+W.P. Kuala Lumpur,2025,2068.6
+W.P. Kuala Lumpur,2026,2097.1
+W.P. Kuala Lumpur,2027,2125.5
+W.P. Kuala Lumpur,2028,2154.0
+W.P. Labuan,2024,99.7
+W.P. Labuan,2025,100.8
+W.P. Labuan,2026,101.9
+W.P. Labuan,2027,103.0
+W.P. Labuan,2028,104.2
+W.P. Putrajaya,2024,119.5
+W.P. Putrajaya,2025,120.8
+W.P. Putrajaya,2026,122.0
+W.P. Putrajaya,2027,123.3
+W.P. Putrajaya,2028,124.5
