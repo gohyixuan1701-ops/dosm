@@ -1,0 +1,10 @@
+{% if result is none %}
+<div class="convert-result error">Enter a valid amount to convert.</div>
+{% else %}
+<div class="convert-result">
+  <strong>{{ '%.2f'|format(amount) }} {{ from_code }}</strong>
+  <span>=</span>
+  <strong class="convert-highlight">{{ '%.2f'|format(result) }} {{ to_code }}</strong>
+  <small>BNM mid rate, {{ rates_date }}</small>
+</div>
+{% endif %}
