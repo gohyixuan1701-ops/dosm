@@ -1,3 +1,43 @@
+"""
+population_score.py -- state and district population trend projection,
+using linear regression (NOT RNN/LSTM -- see METHODOLOGY NOTE), plus
+per-capita normalisation for the crime safety score.
+
+METHODOLOGY NOTE (for the report):
+Population growth is smooth and near-linear year to year (checked:
+Selangor's 2021-2026 growth sits between 0.3% and 2.3% per year, no
+sharp swings) -- unlike crime, which genuinely needed a recurrent model
+to capture irregular year-to-year movement. Forcing an LSTM onto a
+near-linear trend on ~8 data points would risk overfitting noise rather
+than learning anything a straight line doesn't already capture, and
+would be a mismatch between model complexity and data complexity.
+Linear regression is used deliberately, not as a shortcut.
+
+TRAINING WINDOW: state-level population estimates were rebased against
+the 2020 Census, causing a one-off, non-random jump/drop in the 2020
+data point for every state (e.g. Selangor +7.5%, Sabah -12.4% in a
+single year -- not real demographic swings). Fitting a line across the
+full 1970-2026 history would blend two different counting methodologies
+and bias predictions for recent/future years specifically (verified:
+a full-history fit systematically overpredicts Sabah's population by a
+growing margin every year after 2020). This module therefore fits only
+on YEAR_FLOOR onward (2021), a single clean window -- not two separate
+models. District population data only exists from 2020 onward anyway,
+so this issue does not apply there.
+
+DISTRICT POPULATION COVERAGE (for the report): crime_district.csv uses
+POLICE district boundaries; population_district.csv uses standard
+ADMINISTRATIVE districts. These are different official boundary systems
+-- e.g. Johor Bahru is one administrative district but five separate
+police districts (Johor Bahru Utara, Johor Bahru Selatan, Iskandar
+Puteri, Nusajaya, Seri Alam). Only where the two datasets share an
+EXACT district name (115 of 159 crime districts, ~72%) is a safe,
+verified per-capita crime rate computed; elsewhere, crime_forecast.py's
+existing raw-count ranking is used instead, since fabricating a
+population split across mismatched boundaries would be a worse error
+than the raw-count limitation it would replace. The safety_score
+reason text always states which method was actually used.
+"""
 
 from pathlib import Path
 import pandas as pd
@@ -131,6 +171,29 @@ def load_state_population_forecast():
     if not STATE_FORECAST_CSV.exists():
         return None
     return pd.read_csv(STATE_FORECAST_CSV)
+
+
+def get_chart_series(state_name):
+    """Return {'years': [...], 'values': [...], 'real_count': N} for
+    the "Show more detail" chart. Real years are 2021-2026 (the same
+    window the trend is fitted on -- see YEAR_FLOOR and the module
+    docstring for why pre-2021 data is excluded, the 2020 census
+    rebasing). Forecast is 2027-2028."""
+    global _state_pop_cache
+    if _state_pop_cache is None:
+        _state_pop_cache = _load_state_pop()
+
+    crime_name = NAME_ALIASES.get(state_name, state_name)
+    real_rows = _state_pop_cache[_state_pop_cache['state'] == crime_name].sort_values('year')
+    real_years = list(real_rows['year'])
+    real_values = list(real_rows['population'])
+
+    forecast_years = [y for y in [2027, 2028] if y not in real_years]
+    forecast_values = [predict_state_population(state_name, y) for y in forecast_years]
+
+    years = real_years + forecast_years
+    values = real_values + forecast_values
+    return {'years': years, 'values': values, 'real_count': len(real_years)}
 
 
 def population_score(state_name, year):

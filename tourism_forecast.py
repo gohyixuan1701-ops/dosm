@@ -184,6 +184,18 @@ ALL_STATES = ['Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang
               'Terengganu', 'W.P. Kuala Lumpur', 'W.P. Labuan', 'W.P. Putrajaya']
 
 
+def get_chart_series(state_name):
+    """Return {'years': [...], 'values': [...], 'real_count': N} for
+    the "Show more detail" chart -- the first `real_count` points are
+    real (2018-2025), the rest are the model's forecast (2026-2028).
+    None entries in values mean no data for that year (chart should
+    skip/gap them, not treat as zero)."""
+    years = list(range(2018, FORECAST_YEARS[-1] + 1))
+    values = [get_state_visitors(state_name, y) for y in years]
+    real_count = sum(1 for y in years if y <= LAST_REAL_YEAR)
+    return {'years': years, 'values': values, 'real_count': real_count}
+
+
 def tourism_trend_score(state_name, year):
     """Return (score 0-100, reason). Relative ranking by visitor
     volume across all 16 states for the given year -- more visitors

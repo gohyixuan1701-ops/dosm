@@ -20,7 +20,7 @@ from pathlib import Path
 import csv
 from datetime import datetime
 
-DATA_PATH = Path(__file__).parent 'exchange-rates.csv'
+DATA_PATH = Path(__file__).parent / 'exchange-rates.csv'
 
 CURRENCY_LABELS = {
     'USD': 'US Dollar', 'GBP': 'British Pound', 'EUR': 'Euro',
@@ -111,16 +111,26 @@ CURRENCIES = [
 ]
 
 
-def _load_usd_history():
-    """Read the CSV and return every valid (date, MYR-per-USD) pair,
-    sorted oldest to newest -- used by currency_score() to find where
-    today's rate sits relative to its own recent history. Unlike
-    _load_latest_rates(), this keeps the whole valid series, not just
-    the newest row."""
+def _load_currency_history(code='USD'):
+    """Read the CSV and return every valid (date, MYR-per-unit-of-code)
+    pair, sorted oldest to newest -- used by currency_score() to find
+    where today's rate sits relative to its own recent history.
+
+    Row validity is judged using the USD column specifically (see
+    SANITY_MIN_USD/MAX_USD -- this is how the file's corrupted trailing
+    rows were originally identified and filtered out), then whichever
+    currency `code` is actually requested gets read from those same
+    validated rows. This keeps the corruption check working regardless
+    of which currency is being scored."""
     if not DATA_PATH.exists():
         return []
     with open(DATA_PATH, newline='', encoding='utf-8') as f:
         rows = list(csv.DictReader(f))
+
+    # Which raw column holds `code`? Most currencies are their own
+    # column name; some (JPY, HKD, THB...) are quoted per 100 units
+    # under a "...100" column -- see PER_100_COLUMNS.
+    raw_col = next((k for k, v in PER_100_COLUMNS.items() if v == code), code)
 
     history = []
     for row in rows:
@@ -133,52 +143,71 @@ def _load_usd_history():
             continue
         if not (SANITY_MIN_USD <= usd <= SANITY_MAX_USD):
             continue
-        history.append((date, usd))
+        try:
+            raw = float(row.get(raw_col, ''))
+        except (TypeError, ValueError):
+            continue
+        value = raw / 100 if raw_col in PER_100_COLUMNS else raw
+        history.append((date, value))
     history.sort(key=lambda item: item[0])
     return history
 
 
-def currency_score():
-    """Return (score 0-100, reason). This rating is built for DOMESTIC
-    tourists choosing a destination WITHIN Malaysia -- a Malaysian
-    visiting Selangor never converts currency, so exchange rates don't
-    actually affect their decision. Defaults to full marks (100) for
-    that reason, rather than fluctuating on a signal that's irrelevant
-    to the actual user.
+def get_chart_series(code='USD'):
+    """Return {'dates': [...], 'values': [...]} for the "Show more
+    detail" currency chart -- the full real daily history for `code`,
+    no forecasting (see the module docstring: exchange rates are
+    deliberately kept out of the forecasting pipeline). Dates are
+    ISO-format strings, ready for JSON/Chart.js."""
+    history = _load_currency_history(code)
+    return {
+        'dates': [d.strftime('%Y-%m-%d') for d, _ in history],
+        'values': [v for _, v in history],
+    }
 
-    The underlying "how weak is MYR right now" calculation is kept in
-    _foreign_currency_score() below (unused by the live rating, but
-    available if an international-tourist mode is ever added -- that
-    version WOULD matter, since a foreign visitor's currency does
-    affect their spending power)."""
+
+def currency_score(visitor_type='domestic', currency_code='USD'):
+    """Return (score 0-100, reason). Supports both domestic and
+    foreign visitors, since they experience currency completely
+    differently:
+
+    - visitor_type='domestic' (the default): flat 100. A Malaysian
+      visiting Selangor never converts currency, so exchange rates
+      don't affect their decision at all.
+    - visitor_type='foreign': the real weak/strong-ringgit calculation
+      (see _foreign_currency_calc() below), benchmarked against
+      currency_code -- e.g. a Chinese tourist cares about MYR/CNY, not
+      MYR/USD. Defaults to USD only if the caller doesn't specify a
+      currency (earlier versions of this function always used USD
+      regardless of who the tourist actually was -- that was a real
+      bug, not a simplification worth keeping)."""
+    if visitor_type == 'foreign':
+        return _foreign_currency_calc(currency_code)
     return 100, 'This rating targets domestic tourists, for whom exchange rates are not a relevant factor -- full marks by default.'
 
 
-def _foreign_currency_score():
-    """Not currently used by the rating (see currency_score() above).
-    Kept for a possible future international-tourist mode: higher
-    score = ringgit is WEAKER than usual (more attractive to foreign
-    spenders), based on where the latest MYR/USD rate sits within its
-    own available history.
+def _foreign_currency_calc(code='USD'):
+    """Higher score = ringgit is WEAKER than usual against `code`
+    (more attractive to that currency's spenders), based on where the
+    latest MYR/code rate sits within its own available history. Only
+    used when currency_score() is called with visitor_type='foreign'.
 
-    Uses MYR/USD specifically, not a source-market basket (SGD/IDR/THB/
-    CNY, Malaysia's actual top markets per the Tourist Arrivals by
-    Country data) -- a simplification; USD is the standard global
-    reference and the cleanest column in the source file.
+    Does not vary by visit date -- exchange rates were deliberately
+    kept out of the forecasting pipeline (see the module docstring
+    above), so this is always today's actual position, not a forecast
+    for a future date."""
+    if code not in LATEST_RATES:
+        return 75, f'No exchange-rate data available for {code}; a neutral score is used.'
 
-    Also does not vary by visit date even if reactivated -- exchange
-    rates were deliberately kept out of the forecasting pipeline (see
-    the module docstring above), so it would still be today's actual
-    position, not a forecast for a future date."""
-    history = _load_usd_history()
+    history = _load_currency_history(code)
     if len(history) < 2:
-        return 75, 'Not enough exchange-rate history to score; a neutral score is used.'
+        return 75, f'Not enough {code} exchange-rate history to score; a neutral score is used.'
 
     values = [v for _, v in history]
     latest_date, latest_value = history[-1]
     lo, hi = min(values), max(values)
-    # Higher MYR-per-USD = weaker ringgit = more attractive to foreign
-    # spenders = higher score.
+    # Higher MYR-per-unit = weaker ringgit = more attractive to that
+    # currency's spenders = higher score.
     score = 100 if hi == lo else round(100 * (latest_value - lo) / (hi - lo))
 
     if score >= 70:
@@ -187,9 +216,10 @@ def _foreign_currency_score():
         position = 'near a multi-year strong point for the ringgit'
     else:
         position = 'in the mid-range of its recent history'
-    reason = (f'MYR/USD at {latest_value:.4f} as of {latest_date.strftime("%d %b %Y")} -- '
-              f'{position} (range {lo:.4f}-{hi:.4f} over the available history).')
+    reason = (f'MYR/{code} at {latest_value:.4f} as of {latest_date.strftime("%d %b %Y")} -- '
+              f'{position} against {code} (range {lo:.4f}-{hi:.4f} over the available history).')
     return score, reason
+
 
 
 def convert(amount, from_code, to_code):

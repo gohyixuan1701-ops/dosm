@@ -15,12 +15,12 @@ from currency import currency_score
 # relative priority order rather than dumping X's 0.10 onto one factor
 # arbitrarily.
 WEIGHTS = {
-    'monsoon': 0.22,        # M -- was 0.20
-    'safety': 0.22,         # S -- was 0.20
-    'affordability': 0.17,  # C -- was 0.15
-    'tourism': 0.17,        # T -- was 0.15
-    'accommodation': 0.11,  # A -- was 0.10
-    'population': 0.06,     # P -- was 0.05
+    'monsoon': 0.22,        # M -- was 0.22
+    'safety': 0.22,         # S -- was 0.22
+    'affordability': 0.17,  # C -- was 0.17
+    'tourism': 0.17,        # T -- was 0.17
+    'accommodation': 0.11,  # A -- was 0.11
+    'population': 0.06,     # P -- was 0.06
     'gdp': 0.03,            # G -- was 0.03 
     'currency': 0.02,       # U -- was 0.02 
 }
@@ -28,16 +28,16 @@ assert abs(sum(WEIGHTS.values()) - 1.00) < 1e-9, "WEIGHTS must sum to 1.00"
 
 
 def verdict_for(score):
-    if score >= 80:
-        return 'Excellent time to visit', '#43A047'
-    if score >= 60:
-        return 'Good time to visit', '#FDD835'
+    if score >= 70:
+        return 'Excellent time to visit', '#198c72'
+    if score >= 55:
+        return 'Good time to visit', '#c98a1c'
     if score >= 40:
-        return 'Fair — check conditions', '#FB8C00'
-    return 'Not recommended right now', '#E53935'
+        return 'Fair — check conditions', '#d9740a'
+    return 'Not recommended right now', '#c93a3a'
 
 
-def compute_rating(slug, date_str, state_data, district=None):
+def compute_rating(slug, date_str, state_data, district=None, visitor_type='domestic', currency_code='USD'):
     state_name = next((n for n, d in state_data.items() if d['slug'] == slug), None)
     if not state_name:
         return None
@@ -57,10 +57,13 @@ def compute_rating(slug, date_str, state_data, district=None):
     a_score, a_reason = accommodation_score(state_name)
     p_score, p_reason = population_score(state_name, year)
     g_score, g_reason = gdp_score(state_name, year)
-    # currency_score() takes no state/year -- see its own docstring:
-    # exchange rate isn't forecast, so this is the same value for every
-    # state and every date (including future ones).
-    u_score, u_reason = currency_score()
+    # currency_score() branches on visitor_type: flat 100 for domestic
+    # (exchange rates don't affect a Malaysian visiting Malaysia), the
+    # real weak/strong-ringgit calculation (against the tourist's own
+    # currency_code) for foreign, where it genuinely matters. Still
+    # doesn't vary by visit date either way -- see currency.py's own
+    # docstring.
+    u_score, u_reason = currency_score(visitor_type, currency_code)
 
     categories = [
         {'key': 'monsoon', 'label': 'Seasonal / weather risk', 'score': m_score, 'reason': m_reason},
@@ -79,6 +82,7 @@ def compute_rating(slug, date_str, state_data, district=None):
     return {
         'state_name': state_name,
         'district_name': district,
+        'visitor_type': visitor_type,
         'state': state_data[state_name],
         'date_display': visit_date.strftime('%d %B %Y'),
         'overall': overall,

@@ -1,3 +1,47 @@
+"""
+gdp_forecast.py -- RNN & LSTM state GDP forecasting.
+
+METHODOLOGY NOTE (for the report):
+Unlike population (smooth, near-linear -- see population_score.py),
+GDP growth shows a genuine irregular shock: every single state's
+growth went NEGATIVE in 2020 (real recession, -1.1% to -9.1%), then
+sharply REBOUNDED in 2022 (up to +13.3%), before settling back to a
+more normal range by 2024-2025. A straight line cannot capture a
+dip-then-overshoot pattern like that -- this is exactly the kind of
+irregular, non-linear movement RNN/LSTM is suited for, unlike
+population's steady trend. Two different data shapes, two different
+justified methods -- not one technique applied everywhere by default.
+
+SMALLER POOL THAN CRIME (limitation to disclose): crime's shared-model
+approach worked well because 153 districts could be pooled together.
+GDP only has 15 states with complete history (W.P. Putrajaya excluded,
+see below) -- a much smaller pool. A smaller network (8 units, vs
+crime's 16) is used here to reduce overfitting risk on that smaller
+dataset; results should be read with correspondingly more caution.
+
+DATA COVERAGE: uses sector p0 ("GDP at purchasers' prices" -- the
+overall total, not a specific industry) from the 'abs' (absolute
+value, RM million) series in gdp_state_real_supply.csv. 'Supra' is a
+national/supra-regional adjustment row, not a real state, and is
+excluded. W.P. Putrajaya only has data from 2023 onward (3 years --
+too little for a 4-year window) and is excluded from model training;
+its real known values are still served directly by get_state_gdp()
+for the years that exist.
+
+FORECAST HORIZON: unlike crime (last real year 2023, forecast
+2024-2028), GDP data already includes real 2024-2025 values. The
+model therefore only forecasts 2026-2028 (3 recursive steps, not 5) --
+get_state_gdp() returns the REAL value directly for any year <= 2025,
+and only uses the model's prediction for 2026 onward.
+
+WORKFLOW:
+  1. Run this file directly (`python gdp_forecast.py`) to (re)train --
+     writes gdp_forecast.csv (2026-2028 predictions only; real
+     2015-2025 values are already in the source file and aren't
+     duplicated here).
+  2. Call get_state_gdp(state_name, year) for a blended real/forecast
+     lookup -- no TensorFlow needed at request time.
+"""
 
 from pathlib import Path
 import numpy as np
@@ -165,6 +209,17 @@ ALL_STATES = ['Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang
               'Terengganu', 'W.P. Kuala Lumpur', 'W.P. Labuan', 'W.P. Putrajaya']
 
 
+def get_chart_series(state_name):
+    """Return {'years': [...], 'values': [...], 'real_count': N} for
+    the "Show more detail" chart -- real 2015-2025, forecast
+    2026-2028. None entries mean no data for that year (e.g. Putrajaya
+    before 2023) -- chart should skip/gap them, not treat as zero."""
+    years = list(range(2015, FORECAST_YEARS[-1] + 1))
+    values = [get_state_gdp(state_name, y) for y in years]
+    real_count = sum(1 for y in years if y <= LAST_REAL_YEAR)
+    return {'years': years, 'values': values, 'real_count': real_count}
+
+
 def gdp_score(state_name, year):
     """Return (score 0-100, reason). Relative ranking by GDP across
     all states with a value for the given year (Putrajaya may be
@@ -200,3 +255,6 @@ if __name__ == '__main__':
     forecast.to_csv(FORECAST_CSV, index=False)
     print(f"\nSaved to {FORECAST_CSV}")
 
+    print("\nBlended lookup spot-check:")
+    for state, year in [('Selangor', 2024), ('Selangor', 2027), ('Putrajaya', 2024), ('Putrajaya', 2027)]:
+        print(f"  {state} {year}: {get_state_gdp(state, year)}")

@@ -1,3 +1,44 @@
+"""
+cpi_score.py -- state CPI (cost of living / affordability) trend
+projection, using linear regression (NOT RNN/LSTM -- see METHODOLOGY
+NOTE, same reasoning as population_score.py).
+
+METHODOLOGY NOTE (for the report):
+Checked the actual monthly CPI series (2010-2026, cpi_2d_state.csv)
+before choosing a method, same discipline as every other category:
+- The index itself climbs smoothly and continuously (e.g. Selangor:
+  99.3 in Jan 2010 to 142.1 in Jan 2026) -- no sharp reversals.
+- Year-over-year inflation stayed mild throughout, including COVID
+  (roughly -0.5% to +4.2%) -- nothing like GDP's -9% to +13% swing.
+- There is ONE notable one-month dip (April 2020, -3.2 points,
+  Selangor) -- almost certainly the COVID-era fuel/petrol price crash,
+  a real but minor and temporary effect, not a rebasing artifact.
+This is a smooth, near-linear pattern -- much closer to population's
+shape than to crime/GDP's irregular swings -- so linear regression is
+used deliberately, matching population's justification, not GDP's.
+
+NO REBASING DISCONTINUITY (unlike population's 2020 census jump):
+CPI series like this ARE sometimes reset to a new base year (index
+snapped back to 100), which would create the same kind of break
+population's data had. Checked for it explicitly: the index never
+resets anywhere in this series (min 99.3, max 143.8, continuously
+rising) -- so unlike population, the FULL 2010-2025 history is used
+for the trend fit, not a restricted recent window.
+
+GRANULARITY NOTE: source data is MONTHLY, but this module aggregates
+to ANNUAL averages (mean of available months per year) to stay
+consistent with every other category's yearly granularity, and
+because the rating only ever needs a value for a given visit-date's
+YEAR, not a specific month. 2026 is excluded from training (only 7 of
+12 months available at time of writing -- an incomplete year's
+average isn't comparable to a full year's).
+
+WORKFLOW: this module needs no separate training/saving step like the
+RNN/LSTM files -- linear regression is fast enough to fit live, on
+demand, same as population_score.py. Run this file directly to
+generate the full CSV export and see the affordability direction note
+below; nothing needs training or caching for the app to use it.
+"""
 
 from pathlib import Path
 import pandas as pd
@@ -94,6 +135,16 @@ ALL_STATES = ['Johor', 'Kedah', 'Kelantan', 'Melaka', 'Negeri Sembilan', 'Pahang
               'Terengganu', 'W.P. Kuala Lumpur', 'W.P. Labuan', 'W.P. Putrajaya']
 
 
+def get_chart_series(state_name):
+    """Return {'years': [...], 'values': [...], 'real_count': N} for
+    the "Show more detail" chart -- real 2010-2025 (annual averages),
+    forecast 2026-2028."""
+    years = list(range(2010, FORECAST_YEARS[-1] + 1))
+    values = [get_state_cpi(state_name, y) for y in years]
+    real_count = sum(1 for y in years if y <= LAST_REAL_YEAR)
+    return {'years': years, 'values': values, 'real_count': real_count}
+
+
 def affordability_score(state_name, year):
     """Return (score 0-100, reason). Relative ranking by CPI across
     all states for the given year -- INVERTED direction from every
@@ -122,6 +173,17 @@ def affordability_score(state_name, year):
 
 
 if __name__ == '__main__':
+    print("Quick spot-check:")
+    for state in ['Selangor', 'Sabah', 'Perlis']:
+        for yr in [2026, 2027, 2028]:
+            print(f"  {state} {yr}: index {predict_state_cpi(state, yr):.1f}")
+
+    print("\nAFFORDABILITY DIRECTION NOTE: a HIGHER index means prices")
+    print("are HIGHER (less affordable) -- the opposite direction from")
+    print("safety_score(), where a higher score meant safer. Any future")
+    print("rating factor built on this should invert the scale (higher")
+    print("CPI -> LOWER affordability score), not copy safety_score()'s")
+    print("direction unchanged.")
 
     print("\nForecasting all states...")
     forecast = forecast_all_states()
@@ -129,3 +191,6 @@ if __name__ == '__main__':
     forecast.to_csv(FORECAST_CSV, index=False)
     print(f"Saved {len(forecast)} rows to {FORECAST_CSV}")
 
+    print("\nBlended lookup spot-check:")
+    for state, year in [('Selangor', 2024), ('Selangor', 2027)]:
+        print(f"  {state} {year}: {get_state_cpi(state, year):.2f}")
