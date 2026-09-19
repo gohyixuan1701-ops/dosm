@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>MyTourism Analytics — DOSM Competition Prototype</title>
   <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -15,22 +16,16 @@
     <aside class="sidebar">
       <div class="brand">
         <div class="brand-mark">MY</div>
-        <div><strong>MyTourism</strong><span>Malaysia Tourism Intelligence</span></div>
+        <div><strong>MyTourism</strong><span>Data-Driven Travel Intelligence</span></div>
       </div>
       <nav>
         <a class="nav-item active" href="#dashboard"><span>◈</span> Overview</a>
-        <a class="nav-item" href="#states"><span>◫</span> State Explorer</a>
         <a class="nav-item" href="#trends"><span>◒</span> Trends</a>
+        <a class="nav-item" href="#states"><span>◫</span> State Explorer</a>
         <a class="nav-item" href="#currency"><span>RM</span> Currency</a>
-        <a class="nav-item" href="#chatbox"><span>◔</span> AI Chatbox</a>
-        <a class="nav-item" href="#insights"><span>✦</span> AI Insights</a>
+        <a class="nav-item" href="#" onclick="toggleChatWidget(); return false;"><span>◔</span> AI Chatbox</a>
       </nav>
-      <div class="sidebar-card">
-        <div class="tiny-label">DATA STATUS</div>
-        <div class="status-row"><span class="status-dot"></span> Dashboard prototype</div>
-        <p>Replace the mock tourism metrics with DOSM datasets after the UI is approved.</p>
-      </div>
-      <div class="sidebar-foot">DOSM AI Tourism Challenge<br><span>Prototype v0.1</span></div>
+      <div class="sidebar-foot">MyTourism Rating System<br><span>v1.0 — Trained ML Models</span></div>
     </aside>
 
     <main class="main" id="dashboard">
@@ -39,9 +34,6 @@
           <div class="eyebrow">MALAYSIA • TOURISM ANALYTICS</div>
           <h1>When and where should you go?</h1>
           <p>Pick a destination and a date — get a rating built from seasonal risk and tourism demand trends.</p>
-        </div>
-        <div class="header-actions">
-          <button class="profile-btn">DOSM</button>
         </div>
       </header>
 
@@ -64,10 +56,27 @@
               <select name="district" id="district-select">
                 <option value="">Choose a state first</option>
               </select>
+              <small class="opt-label">Optional — for more precise ratings</small>
             </label>
             <label>
               <span>Visit date</span>
               <input type="date" name="visit_date" id="visit-date-input" required>
+            </label>
+            <label>
+              <span>Visitor type</span>
+              <select name="visitor_type" id="visitor-type-select" onchange="toggleCurrencyField(this.value)">
+                <option value="domestic" selected>Domestic (Malaysian traveller)</option>
+                <option value="foreign">Foreign (international traveller)</option>
+              </select>
+            </label>
+            <label id="currency-code-field" style="display:none;">
+              <span>Home currency</span>
+              <select name="currency_code" id="rating-currency-select" onchange="syncConverterCurrency(this.value)">
+                {% for c in currencies %}
+                <option value="{{ c.code }}" {% if c.code == 'USD' %}selected{% endif %}>{{ c.code }} — {{ c.label }}</option>
+                {% endfor %}
+              </select>
+              <small class="opt-label">Used to score today's MYR strength for this tourist's own currency (also updates the converter below).</small>
             </label>
             <button class="primary-btn wide" type="submit">Generate rating →</button>
           </form>
@@ -99,10 +108,10 @@
       </section>
 
       <section class="kpi-grid" id="trends">
-        <article class="kpi-card"><div class="kpi-icon">↗</div><span>International arrivals</span><strong>26.7M</strong><em>+7.8% vs prior year</em></article>
-        <article class="kpi-card"><div class="kpi-icon">◌</div><span>Domestic trips</span><strong>126.4M</strong><em>+5.2% vs prior year</em></article>
-        <article class="kpi-card"><div class="kpi-icon">RM</div><span>Tourism receipts</span><strong>RM 102.9B</strong><em>+9.1% vs prior year</em></article>
-        <article class="kpi-card accent"><div class="kpi-icon">✦</div><span>AI opportunity score</span><strong>82 / 100</strong><em>High potential for prediction</em></article>
+        <article class="kpi-card"><div class="kpi-icon">◌</div><span>Domestic tourism forecast, {{ kpis.year }}</span><strong>{{ kpis.domestic_total_display }}</strong></article>
+        <article class="kpi-card"><div class="kpi-icon">🛏</div><span>Total accommodation capacity</span><strong>{{ kpis.accommodation_total_display }} rooms</strong></article>
+        <article class="kpi-card"><div class="kpi-icon">RM</div><span>Total economic output (GDP), {{ kpis.year }}</span><strong>{{ kpis.gdp_total_display }}</strong></article>
+        <article class="kpi-card accent"><div class="kpi-icon">✦</div><span>Data categories modelled</span><strong>8 / 8</strong></article>
       </section>
 
       <section class="content-grid" id="states">
@@ -128,60 +137,235 @@
         </aside>
       </section>
 
-      <section class="content-grid" id="currency-chatbox">
+      <section class="content-grid single" id="currency-chatbox">
         <div class="panel currency-panel" id="currency">
           <div class="panel-head"><div><div class="section-kicker">CURRENCY</div><h3>Exchange rate converter</h3></div></div>
           <form class="convert-form" hx-post="{{ url_for('convert') }}" hx-target="#convert-output" hx-swap="innerHTML">
-            <div class="convert-row">
+            <div class="convert-row wide">
               <label class="convert-amount">
                 <span>Amount</span>
                 <input type="number" name="amount" step="0.01" min="0" value="100" required>
               </label>
               <label>
                 <span>Currency</span>
-                <select name="from_currency">
+                <select name="from_currency" id="converter-currency-select">
                   {% for c in currencies %}
                   <option value="{{ c.code }}" {% if c.code == 'USD' %}selected{% endif %}>{{ c.code }} — {{ c.label }}</option>
                   {% endfor %}
                 </select>
               </label>
+              <input type="hidden" name="to_currency" value="MYR">
+              <button class="primary-btn dark" type="submit">Convert to RM →</button>
             </div>
-            <input type="hidden" name="to_currency" value="MYR">
-            <button class="primary-btn wide dark" type="submit">Convert to RM →</button>
           </form>
           <div id="convert-output" class="convert-output"></div>
           <small class="map-note">Source: Bank Negara Malaysia mid rates (daily){% if rates_date %}, latest: {{ rates_date }}{% endif %}</small>
         </div>
-
-        <div class="panel reserved-panel" id="chatbox">
-          <div class="reserved-head">
-            <div><div class="section-kicker">AI CHATBOX</div><h3>Ask about your trip</h3></div>
-            <span class="soon-pill">COMING SOON</span>
-          </div>
-          <div class="reserved-preview">
-            <div class="chat-bubble chat-bot reserved-fill">Hi! Ask me about monsoon season, currency, or the best time to visit a state.</div>
-          </div>
-          <p class="reserved-note">Deferred until the ML/statistics work is done — may end up as a rule-based assistant or linked out to an AI agent instead. Space is reserved here either way.</p>
-        </div>
       </section>
 
-      <section class="panel insight-panel" id="insights">
-        <div class="insight-copy">
-          <div class="section-kicker">AI / MACHINE LEARNING</div>
-          <h3>Design the dashboard now; plug in intelligence later.</h3>
-          <p>This section is intentionally UI-first. Your future model can predict visitor volume, recommend destinations, classify tourist segments, or flag unusual changes in tourism activity.</p>
-          <button class="primary-btn" hx-get="{{ url_for('insights') }}" hx-target="#insight-output" hx-swap="innerHTML">Generate prototype insight →</button>
-        </div>
-        <div class="insight-output" id="insight-output">
-          <div class="output-placeholder"><span>✦</span><div><strong>AI insight output</strong><p>Waiting for model connection...</p></div></div>
-        </div>
-      </section>
-
-      <footer>Designed as an AI-assisted tourism dashboard concept for a DOSM competition. Data shown in this prototype is illustrative until linked to approved sources.</footer>
+      <footer>
+        <p>An AI/ML-powered tourism intelligence dashboard built for the DOSM Datathon 2026, using real data from official Malaysian sources.</p>
+      </footer>
     </main>
   </div>
 
+  <!-- Floating AI Chatbox widget -->
+  <div class="chat-widget">
+    <div class="chat-widget-panel" id="chat-widget-panel">
+      <div class="chat-widget-head">
+        <strong>Ask about your trip</strong>
+        <button type="button" class="chat-widget-close" onclick="toggleChatWidget()" aria-label="Close chat">✕</button>
+      </div>
+      <div class="chat-log" id="chat-log">
+        <div class="chat-bubble chat-bot">Hi! Ask me about a state (e.g. "is Selangor safe?", "GDP of Sabah", "how expensive is Penang") or just a state name for a full summary.</div>
+      </div>
+      <form class="chat-form" hx-post="{{ url_for('chat') }}" hx-target="#chat-log" hx-swap="beforeend" hx-on::after-request="this.reset()">
+        <input type="text" name="message" placeholder="e.g. is Selangor safe?" autocomplete="off" required>
+        <button class="primary-btn dark" type="submit">Send</button>
+      </form>
+      <small class="map-note">Rule-based assistant calling this project's real trained functions directly -- not an LLM, see chatbot.py.</small>
+    </div>
+
+    <button type="button" class="chat-widget-toggle" onclick="toggleChatWidget()" aria-label="Open chat">
+      <!--
+        MASCOT SPOT: drop the finished tiger artwork in as
+        static/mascot-tiger.png (any reasonable size, will be scaled
+        to fit) and it'll replace the emoji fallback automatically --
+        no other change needed. The onerror handler keeps the emoji
+        showing gracefully until that file exists.
+      -->
+      <img src="{{ url_for('static', filename='mascot-tiger.png') }}" alt="Chat with our tiger AI assistant"
+           onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+      <span class="chat-widget-emoji" style="display:none;">🐯</span>
+    </button>
+  </div>
+
   <script>
+    // Shows the "Home currency" field only when Foreign is selected --
+    // it's meaningless for a domestic visitor (currency_score() ignores
+    // it for visitor_type='domestic' regardless, but hiding it avoids
+    // asking an irrelevant question).
+    // --- "Show more detail" charts ------------------------------------
+    var activeCharts = [];
+
+    function destroyActiveCharts() {
+      activeCharts.forEach(function (c) { c.destroy(); });
+      activeCharts = [];
+    }
+
+    function makeChartCard(container, title, canvasId, caption) {
+      var block = document.createElement('div');
+      block.className = 'chart-block';
+      block.innerHTML = '<h4>' + title + '</h4><canvas id="' + canvasId + '"></canvas>'
+        + (caption ? '<small class="chart-caption">' + caption + '</small>' : '');
+      container.appendChild(block);
+      return document.getElementById(canvasId);
+    }
+
+    function renderTimeSeriesChart(canvas, years, values, realCount, label) {
+      var realValues = values.map(function (v, i) { return i < realCount ? v : null; });
+      var forecastValues = values.map(function (v, i) { return i >= realCount - 1 ? v : null; });
+      var chart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: years,
+          datasets: [
+            { label: label + ' (real)', data: realValues, borderColor: '#0b8b83', backgroundColor: 'transparent', tension: 0.25, spanGaps: true },
+            { label: label + ' (forecast)', data: forecastValues, borderColor: '#0b8b83', borderDash: [5, 5], backgroundColor: 'transparent', tension: 0.25, spanGaps: true },
+          ],
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } },
+      });
+      activeCharts.push(chart);
+    }
+
+    function renderCurrencyChart(canvas, dates, values) {
+      var chart = new Chart(canvas, {
+        type: 'line',
+        data: { labels: dates, datasets: [{ label: 'MYR rate', data: values, borderColor: '#c98a1c', backgroundColor: 'transparent', pointRadius: 0, tension: 0.15 }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { x: { ticks: { maxTicksLimit: 8 } } } },
+      });
+      activeCharts.push(chart);
+    }
+
+    // Maps a seasonal score (0-100) to a colour along a red -> amber ->
+    // teal gradient -- low score (risky month) reads as red, high
+    // score (safe month) reads as teal, matching the dashboard's
+    // existing colour language elsewhere.
+    function scoreToColor(score) {
+      var clamped = Math.max(0, Math.min(100, score));
+      var hue = (clamped / 100) * 165; // 0=red, 165=teal
+      return 'hsl(' + hue + ', 62%, 45%)';
+    }
+
+    function renderSeasonalChart(canvas, months, values, visitMonth) {
+      var colours = values.map(function (v) { return scoreToColor(v); });
+      // Visit month is marked with a dark outline, not a different
+      // fill colour -- keeps the gradient meaningful for every bar
+      // instead of one bar jumping to an unrelated colour.
+      var borderColours = months.map(function (m, i) { return (i + 1 === visitMonth) ? '#10263a' : 'transparent'; });
+      var borderWidths = months.map(function (m, i) { return (i + 1 === visitMonth) ? 3 : 0; });
+      var chart = new Chart(canvas, {
+        type: 'bar',
+        data: { labels: months, datasets: [{ label: 'Seasonal score', data: values, backgroundColor: colours, borderColor: borderColours, borderWidth: borderWidths }] },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { min: 0, max: 100 } } },
+      });
+      activeCharts.push(chart);
+    }
+
+    function makeNoteCard(container, title, note) {
+      var block = document.createElement('div');
+      block.className = 'chart-block';
+      block.innerHTML = '<h4>' + title + '</h4><p class="rating-note">' + note + '</p>';
+      container.appendChild(block);
+    }
+
+    function showRatingDetail(button) {
+      var container = document.getElementById('detail-charts');
+      if (!container) return;
+
+      if (container.style.display !== 'none' && container.dataset.loaded === 'true') {
+        container.style.display = container.style.display === 'none' ? '' : 'none';
+        return;
+      }
+
+      var destination = document.getElementById('destination-select').value;
+      var district = document.getElementById('district-select').value;
+      var visitDate = document.getElementById('visit-date-input').value;
+      var visitorTypeSelect = document.getElementById('visitor-type-select');
+      var visitorType = visitorTypeSelect ? visitorTypeSelect.value : 'domestic';
+      var ratingCurrencySelect = document.getElementById('rating-currency-select');
+      var currencyCode = ratingCurrencySelect ? ratingCurrencySelect.value : 'USD';
+
+      button.textContent = 'Loading charts…';
+      fetch('/rating-charts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ destination: destination, district: district, visit_date: visitDate, currency_code: currencyCode }),
+      })
+        .then(function (r) {
+          if (!r.ok) throw new Error('chart fetch failed: ' + r.status);
+          return r.json();
+        })
+        .then(function (data) {
+          destroyActiveCharts();
+          container.innerHTML = '';
+
+          renderTimeSeriesChart(makeChartCard(container, 'Tourism demand trend', 'chart-tourism'), data.tourism.years, data.tourism.values, data.tourism.real_count, 'Visitors (thousand)');
+          renderTimeSeriesChart(makeChartCard(container, 'Safety / crime outlook', 'chart-crime'), data.crime.years, data.crime.values, data.crime.real_count, 'Crimes');
+          renderTimeSeriesChart(makeChartCard(container, 'Economic strength (GDP)', 'chart-gdp'), data.gdp.years, data.gdp.values, data.gdp.real_count, 'RM million');
+          renderTimeSeriesChart(makeChartCard(container, 'Cost affordability (CPI)', 'chart-cpi'), data.cpi.years, data.cpi.values, data.cpi.real_count, 'CPI index');
+          renderTimeSeriesChart(makeChartCard(container, 'Population / infrastructure', 'chart-population'), data.population.years, data.population.values, data.population.real_count, 'Population (thousand)');
+
+          renderSeasonalChart(makeChartCard(container, 'Seasonal weather score', 'chart-seasonal', 'Higher = better weather conditions (not a risk percentage)'), data.seasonal.months, data.seasonal.values, data.seasonal.visit_month);
+
+          // Currency only matters for foreign visitors (domestic
+          // always scores 100 -- see currency.py's currency_score()),
+          // so the chart is skipped, not shown with a misleading
+          // default, when Domestic is selected.
+          if (visitorType === 'foreign') {
+            renderCurrencyChart(makeChartCard(container, 'Currency history (MYR/' + currencyCode + ')', 'chart-currency'), data.currency.dates, data.currency.values);
+          } else {
+            makeNoteCard(container, 'Currency history', 'Not shown for domestic tourists — exchange rates don\'t affect a Malaysian visiting Malaysia. Switch "Visitor type" to Foreign above to see this.');
+          }
+
+          container.style.display = '';
+          container.dataset.loaded = 'true';
+          button.textContent = 'Hide detail ↑';
+        })
+        .catch(function (err) {
+          console.error(err);
+          container.innerHTML = '<p class="rating-note">Could not load charts for this selection.</p>';
+          container.style.display = '';
+          button.textContent = 'Show more detail →';
+        });
+    }
+
+    function toggleChatWidget() {
+      var panel = document.getElementById('chat-widget-panel');
+      if (!panel) return;
+      panel.classList.toggle('open');
+    }
+
+    function toggleCurrencyField(visitorType) {
+      var field = document.getElementById('currency-code-field');
+      if (!field) return;
+      field.style.display = (visitorType === 'foreign') ? '' : 'none';
+    }
+
+    // Convenience: picking a "Home currency" for the rating also
+    // defaults the separate Currency converter below to the same
+    // currency, so the user doesn't have to pick it twice. One-way
+    // only (rating -> converter) -- the two features otherwise stay
+    // independent, as before.
+    function syncConverterCurrency(code) {
+      var converterSelect = document.getElementById('converter-currency-select');
+      if (!converterSelect) return;
+      if ([...converterSelect.options].some(function (o) { return o.value === code; })) {
+        converterSelect.value = code;
+      }
+    }
+
     // Fetches this state's district list into the district dropdown.
     // Called on manual selection and on map-click selection alike, so
     // both paths keep the district field in sync with the state field.

@@ -11,7 +11,7 @@
     <span>/ 100</span>
   </div>
   <div class="rating-headline">
-    <div class="section-kicker">{{ r.state_name.upper() }}{% if r.district_name %} — {{ r.district_name.upper() }}{% endif %} • {{ r.date_display }}</div>
+    <div class="section-kicker">{{ r.state_name.upper() }}{% if r.district_name %} — {{ r.district_name.upper() }}{% endif %} • {{ r.date_display }} • {{ 'FOREIGN TOURIST' if r.visitor_type == 'foreign' else 'DOMESTIC TOURIST' }}</div>
     <h3>{{ r.verdict }}</h3>
   </div>
   <div class="rating-breakdown">
@@ -24,9 +24,7 @@
     <p class="rating-note">{{ cat.reason }}{% if cat.key == 'safety' and not r.district_name %} <em>(state-level — no district selected)</em>{% endif %}</p>
     {% endfor %}
   </div>
-  <div class="future-card">
-    <span>✦</span>
-    <div><strong>All 8 factors are live</strong><small>Seasonal risk (MetMalaysia-dated rule), safety/GDP/tourism (LSTM or SimpleRNN, whichever validated better per category), population/affordability (linear regression), accommodation (2022 capacity snapshot), currency (live MYR/USD position). See each module's docstring for its own methodology and limitations.</small></div>
-  </div>
+  <button class="ghost-btn small detail-toggle" type="button" onclick="showRatingDetail(this)">Show more detail →</button>
+  <div class="detail-charts" id="detail-charts" style="display:none;"></div>
 </div>
 {% endif %}

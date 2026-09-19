@@ -54,3 +54,28 @@
 .reserved-preview .chat-bubble.reserved-fill{color:#8aa0ab;background:#f1f5f6;font-weight:500}
 .reserved-note{font-size:10px;line-height:1.6;color:var(--muted);margin:0}
 .rating-form .opt-label{display:block;text-transform:none;font-weight:500;letter-spacing:0;color:#7fa2a9;font-size:9px;margin-top:3px}
+.detail-toggle{margin-top:14px;width:100%;text-align:center}
+.detail-charts{margin-top:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.chart-block{border:1px solid var(--line);border-radius:10px;padding:12px}
+.chart-block h4{margin:0 0 8px;font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+.chart-block canvas{max-height:220px}
+@media(max-width:800px){.detail-charts{grid-template-columns:1fr}}
+.chart-caption{display:block;margin-top:8px;color:var(--muted);font-size:10px;font-style:italic}
+.content-grid.single{grid-template-columns:1fr}
+.convert-row.wide{grid-template-columns:1fr 1fr auto;align-items:end}
+.convert-row.wide .primary-btn{white-space:nowrap;padding:0 22px;height:44px}
+@media(max-width:640px){.convert-row.wide{grid-template-columns:1fr}}
+.chat-widget{position:fixed;bottom:22px;right:22px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.chat-widget-toggle{width:60px;height:60px;border-radius:50%;border:none;background:var(--navy,#0e2d42);box-shadow:0 10px 26px rgba(14,45,66,.32);cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;overflow:hidden;transition:transform .15s ease}
+.chat-widget-toggle:hover{transform:scale(1.06)}
+.chat-widget-toggle img{width:100%;height:100%;object-fit:cover}
+.chat-widget-emoji{font-size:28px;line-height:1}
+.chat-widget-panel{width:320px;max-width:calc(100vw - 44px);background:#fff;border-radius:16px;box-shadow:0 20px 48px rgba(14,45,66,.24);padding:16px;display:none;flex-direction:column}
+.chat-widget-panel.open{display:flex}
+.chat-widget-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.chat-widget-head strong{font-size:13px;color:var(--ink)}
+.chat-widget-close{border:none;background:none;font-size:14px;color:var(--muted);cursor:pointer;padding:4px}
+@media(max-width:480px){.chat-widget{right:14px;bottom:14px}.chat-widget-panel{width:calc(100vw - 28px)}}
+.rating-form {gap: 14px;}
+.rating-form .opt-label {display: block;position: static;margin: 2px 0 0;line-height: 1.4;white-space: normal;}
+.rating-form > .primary-btn {position: static;z-index: 1;margin-top: 2px;}
