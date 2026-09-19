@@ -173,10 +173,6 @@ def affordability_score(state_name, year):
 
 
 if __name__ == '__main__':
-    print("Quick spot-check:")
-    for state in ['Selangor', 'Sabah', 'Perlis']:
-        for yr in [2026, 2027, 2028]:
-            print(f"  {state} {yr}: index {predict_state_cpi(state, yr):.1f}")
 
     print("\nAFFORDABILITY DIRECTION NOTE: a HIGHER index means prices")
     print("are HIGHER (less affordable) -- the opposite direction from")
@@ -190,7 +186,3 @@ if __name__ == '__main__':
     forecast['predicted_cpi'] = forecast['predicted_cpi'].round(2)
     forecast.to_csv(FORECAST_CSV, index=False)
     print(f"Saved {len(forecast)} rows to {FORECAST_CSV}")
-
-    print("\nBlended lookup spot-check:")
-    for state, year in [('Selangor', 2024), ('Selangor', 2027)]:
-        print(f"  {state} {year}: {get_state_cpi(state, year):.2f}")

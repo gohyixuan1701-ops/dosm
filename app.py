@@ -5,7 +5,7 @@ from datetime import datetime
 from rating import compute_rating
 import crime_forecast
 import currency
-import chatbot
+import chatbox
 import tourism_forecast
 import accommodation_data
 import gdp_forecast

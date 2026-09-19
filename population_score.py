@@ -220,9 +220,11 @@ def population_score(state_name, year):
         return 75, 'No population data available for this state/year; a neutral score is used.'
 
     series = pd.Series(values)
-    lo, hi = series.min(), series.max()
+    ranked = series.rank(method='min')
+    this_rank = int(ranked[crime_name])
+    n = len(series)
+    score = round(100 * (this_rank - 1) / (n - 1))
     this_value = series[crime_name]
-    score = 100 if hi == lo else round(100 * (this_value - lo) / (hi - lo))
     reason = f'Estimated population ~{this_value:,.0f} thousand in {year}, relative to other states (higher = more infrastructure/amenities, assumption).'
     return score, reason
 
@@ -235,13 +237,6 @@ def load_district_population_forecast():
 
 
 if __name__ == '__main__':
-    print("Quick spot-check (a few states/districts, printed only):")
-    for state in ['Selangor', 'Sabah', 'Perlis']:
-        for yr in [2026, 2027, 2028]:
-            print(f"  {state} {yr}: {predict_state_population(state, yr):,.0f} thousand")
-    for d in ['Batu Pahat', 'Johor Bahru Selatan', 'Kluang']:
-        pop = predict_district_population('Johor', d, 2026)
-        print(f"  Johor / {d}: {'matched, ' + format(pop, ',.0f') + ' thousand' if pop else 'no exact match'}")
 
     print("\nForecasting all states...")
     state_forecast = forecast_all_states()

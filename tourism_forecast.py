@@ -227,6 +227,3 @@ if __name__ == '__main__':
     forecast.to_csv(FORECAST_CSV, index=False)
     print(f"\nSaved to {FORECAST_CSV}")
 
-    print("\nBlended lookup spot-check:")
-    for state, year in [('Selangor', 2024), ('Selangor', 2027)]:
-        print(f"  {state} {year}: {get_state_visitors(state, year):,.0f} thousand")

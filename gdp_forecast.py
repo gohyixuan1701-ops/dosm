@@ -221,9 +221,28 @@ def get_chart_series(state_name):
 
 
 def gdp_score(state_name, year):
-    """Return (score 0-100, reason). Relative ranking by GDP across
+    """Return (score 0-100, reason). RANK-BASED scoring by GDP across
     all states with a value for the given year (Putrajaya may be
     missing for years it has no data -- see get_state_gdp()).
+
+    Uses each state's RANK POSITION (1st, 2nd, 3rd...), not raw
+    min-max distance from the single largest state. Switched from
+    min-max after checking real 2026 data: Selangor's economy
+    (RM418,835M) is so far ahead of everyone else that min-max scoring
+    compressed genuinely large economies -- e.g. Johor, Malaysia's 4th
+    largest state economy at RM156,693M, scored only 36/100 under
+    min-max purely because it's ~2.6x smaller than Selangor, not
+    because it's actually a weak economy. Rank-based scoring gives
+    Johor 86/100, correctly reflecting "near the top of 16 states"
+    instead of "far from one outlier."
+
+    TRADE-OFF (disclose if asked): rank-based scoring only reflects
+    POSITION, not MAGNITUDE -- e.g. Sarawak (RM150,636M) and Pulau
+    Pinang (RM119,298M) are genuinely, meaningfully different sizes,
+    but rank-based scoring only shows an 8-point gap between them
+    (79 vs 71) where min-max showed a clearer 35 vs 27. Fixing the
+    outlier-compression problem costs some of that "how much bigger"
+    signal in the middle of the pack.
 
     ASSUMPTION (same judgment call as population_score() -- confirm/
     flip if you disagree): HIGHER GDP -> HIGHER score, on the basis
@@ -240,10 +259,13 @@ def gdp_score(state_name, year):
         return 75, 'No GDP data available for this state/year; a neutral score is used.'
 
     series = pd.Series(values)
-    lo, hi = series.min(), series.max()
+    ranked = series.rank(method='min')
+    this_rank = int(ranked[crime_name])
+    n = len(series)
+    score = round(100 * (this_rank - 1) / (n - 1))
     this_value = series[crime_name]
-    score = 100 if hi == lo else round(100 * (this_value - lo) / (hi - lo))
-    reason = f'GDP ~RM{this_value:,.0f} million in {year}, relative to other states (higher = more infrastructure/amenities, assumption).'
+    reason = (f'GDP ~RM{this_value:,.0f} million in {year} -- ranked {n - this_rank} of {n} states '
+              f'(higher = more infrastructure/amenities, assumption).')
     return score, reason
 
 
@@ -254,7 +276,3 @@ if __name__ == '__main__':
 
     forecast.to_csv(FORECAST_CSV, index=False)
     print(f"\nSaved to {FORECAST_CSV}")
-
-    print("\nBlended lookup spot-check:")
-    for state, year in [('Selangor', 2024), ('Selangor', 2027), ('Putrajaya', 2024), ('Putrajaya', 2027)]:
-        print(f"  {state} {year}: {get_state_gdp(state, year)}")

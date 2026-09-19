@@ -15,14 +15,14 @@ from currency import currency_score
 # relative priority order rather than dumping X's 0.10 onto one factor
 # arbitrarily.
 WEIGHTS = {
-    'monsoon': 0.22,        # M -- was 0.22
-    'safety': 0.22,         # S -- was 0.22
+    'monsoon': 0.20,        # M -- was 0.20
+    'safety': 0.20,         # S -- was 0.20
     'affordability': 0.17,  # C -- was 0.17
     'tourism': 0.17,        # T -- was 0.17
     'accommodation': 0.11,  # A -- was 0.11
     'population': 0.06,     # P -- was 0.06
-    'gdp': 0.03,            # G -- was 0.03 
-    'currency': 0.02,       # U -- was 0.02 
+    'gdp': 0.05,            # G -- was 0.05 
+    'currency': 0.04,       # U -- was 0.04 
 }
 assert abs(sum(WEIGHTS.values()) - 1.00) < 1e-9, "WEIGHTS must sum to 1.00"
 
