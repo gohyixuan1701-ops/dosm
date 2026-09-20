@@ -187,7 +187,7 @@ def convert():
 @app.post('/chat')
 def chat():
     message = request.form.get('message', '').strip()
-    reply = chatbot.reply_to(message) if message else None
+    reply = chatbox.reply_to(message) if message else None
     return render_template('_chat_message.html', message=message, reply=reply)
 
 
