@@ -311,13 +311,13 @@
           destroyActiveCharts();
           container.innerHTML = '';
 
-          renderTimeSeriesChart(makeChartCard(container, 'Tourism demand trend', 'chart-tourism'), data.tourism.years, data.tourism.values, data.tourism.real_count, 'Visitors (thousand)');
-          renderTimeSeriesChart(makeChartCard(container, 'Safety / crime outlook', 'chart-crime'), data.crime.years, data.crime.values, data.crime.real_count, 'Crimes');
-          renderTimeSeriesChart(makeChartCard(container, 'Economic strength (GDP)', 'chart-gdp'), data.gdp.years, data.gdp.values, data.gdp.real_count, 'RM million');
-          renderTimeSeriesChart(makeChartCard(container, 'Cost affordability (CPI)', 'chart-cpi'), data.cpi.years, data.cpi.values, data.cpi.real_count, 'CPI index');
-          renderTimeSeriesChart(makeChartCard(container, 'Population / infrastructure', 'chart-population'), data.population.years, data.population.values, data.population.real_count, 'Population (thousand)');
-
           renderSeasonalChart(makeChartCard(container, 'Seasonal weather score', 'chart-seasonal', 'Higher = better weather conditions (not a risk percentage)'), data.seasonal.months, data.seasonal.values, data.seasonal.visit_month);
+
+          renderTimeSeriesChart(makeChartCard(container, 'Safety / crime outlook', 'chart-crime'), data.crime.years, data.crime.values, data.crime.real_count, 'Crimes');
+          renderTimeSeriesChart(makeChartCard(container, 'Cost affordability (CPI)', 'chart-cpi'), data.cpi.years, data.cpi.values, data.cpi.real_count, 'CPI index');
+          renderTimeSeriesChart(makeChartCard(container, 'Tourism demand trend', 'chart-tourism'), data.tourism.years, data.tourism.values, data.tourism.real_count, 'Visitors (thousand)');
+          renderTimeSeriesChart(makeChartCard(container, 'Population / infrastructure', 'chart-population'), data.population.years, data.population.values, data.population.real_count, 'Population (thousand)');
+          renderTimeSeriesChart(makeChartCard(container, 'Economic strength (GDP)', 'chart-gdp'), data.gdp.years, data.gdp.values, data.gdp.real_count, 'RM million');
 
           // Currency only matters for foreign visitors (domestic
           // always scores 100 -- see currency.py's currency_score()),
