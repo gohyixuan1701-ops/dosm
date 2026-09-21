@@ -34,6 +34,24 @@ STATE_DATA = {
     'Putrajaya': {'code':'MY16','colour':'#475569','visitors':'1.18M','growth':'+6.8%','highlights':['Putra Mosque','Persiaran Perdana','Taman Botani'], 'slug':'putrajaya'},
 }
 
+# 'visitors' and 'growth' above are leftover mock values from the
+# original prototype scaffold -- overwrite with real numbers computed
+# once at startup (the underlying data doesn't change during a running
+# session, same reasoning as SVG_PATH being prepared once below).
+# 'visitors' = real 2026 forecast (matches the rating's own tourism
+# factor); 'growth' = real 2024->2025 year-over-year change, using two
+# REAL observed years rather than real-vs-forecast, which would be a
+# weaker, less defensible comparison. highlights/colour/code/slug are
+# untouched -- not derived from any dataset, left as-is deliberately.
+for _state_name, _data in STATE_DATA.items():
+    _v2024 = tourism_forecast.get_state_visitors(_state_name, 2024)
+    _v2025 = tourism_forecast.get_state_visitors(_state_name, 2025)
+    _v2026 = tourism_forecast.get_state_visitors(_state_name, 2026)
+    if _v2026 is not None:
+        _data['visitors'] = f'{_v2026 / 1000:.2f}M'
+    if _v2024 and _v2025:
+        _data['growth'] = f'{(_v2025 - _v2024) / _v2024 * 100:+.1f}%'
+
 SVG_PATH = Path(app.root_path, 'static', 'malaysia.svg').read_text(encoding='utf-8')
 
 # Turn the uploaded SVG into an inline, dashboard-friendly map.
